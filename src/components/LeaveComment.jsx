@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 const API_BASE = import.meta?.env?.VITE_API_URL || "http://localhost:4000";
 
-export default function LeaveComment() {
+export default function LeaveComment({ onCommentAdded }) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [relationship, setRelationship] = useState("");
@@ -37,6 +37,11 @@ export default function LeaveComment() {
       setRelationship("");
       setMessage("");
       setOpen(false);
+      
+      // Notify parent to reload comments
+      if (onCommentAdded) {
+        onCommentAdded();
+      }
     } catch (e) {
       console.error(e);
     }

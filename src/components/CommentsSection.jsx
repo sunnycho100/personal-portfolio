@@ -1,4 +1,3 @@
-// src/components/CommentsSection.jsx
 import { useEffect, useState } from "react";
 
 const API_BASE = import.meta?.env?.VITE_API_URL || "http://localhost:4000";
@@ -16,21 +15,22 @@ function hueFromString(s) {
   return h % 360;
 }
 
-export default function CommentsSection() {
+export default function CommentsSection({ onReloadRequest }) {
   const [dbComments, setDbComments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadDbComments();
-  }, []);
+  }, [onReloadRequest]);
 
   async function loadDbComments() {
     try {
       const res = await fetch(`${API_BASE}/api/comments?take=50`);
       const data = await res.json();
-      setDbComments(data);
+      setDbComments(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
+      setDbComments([]);
     } finally {
       setLoading(false);
     }

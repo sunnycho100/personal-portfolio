@@ -3,7 +3,7 @@ import Reveal from './Reveal.jsx';
 import BookCarousel from './BookCarousel.jsx';
 import CommentsSection from './CommentsSection.jsx';
 
-export default function More() {
+export default function More({ reloadComments }) {
   const books = [
     { id:'how-to-win-friends', src: encodeURI('/books/How to Win Friends and Influence People - Dale Carnegie.jpg'), title:'How to Win Friends and Influence People', author:'Dale Carnegie', review:'People feel seen → trust grows.' },
     { id:'life-leverage', src: encodeURI('/books/Life Leverage - Rob Moore.jpg'), title:'Life Leverage', author:'Rob Moore', review:'Design life first; fit work around it.' },
@@ -55,7 +55,7 @@ export default function More() {
         </details>
 
         {/* New: Comments accordion */}
-        <CommentsSection />
+        <CommentsSection onReloadRequest={reloadComments} />
       </Reveal>
     </section>
   );

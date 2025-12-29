@@ -3,7 +3,7 @@ import Reveal from "./Reveal.jsx";
 import { FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa";
 import LeaveComment from "./LeaveComment.jsx";
 
-export default function Contact() {
+export default function Contact({ onCommentAdded }) {
   return (
     <section id="contact" className="contact-container section">
       <Reveal delay="340ms">
@@ -33,7 +33,7 @@ export default function Contact() {
       </Reveal>
 
       <div className="contact-cta">
-        <LeaveComment />
+        <LeaveComment onCommentAdded={onCommentAdded} />
       </div>
     </section>
   );
