@@ -8,25 +8,35 @@ export default function Experience() {
         <ul className="item-list stagger">
           <li className="list-item">
             <div className="role-line">
-              <strong>Undergraduate Teaching Assistant</strong> — University of Wisconsin–Madison
-              <span className="meta">Aug 2025 – Present · Madison, WI</span>
+              <strong>Robotics Research Intern</strong> — Connected & Autonomous Transportation Systems Lab (Prof. Xiaopeng Li)
+              <span className="meta">Sep 2025 – Present · Madison, WI</span>
             </div>
             <ul className="bullet-list stagger">
-              <li>Provided one-to-one in-class tutoring and hosted weekly office hours to support students outside of lecture.</li>
-              <li>Collaborated with the professor and TAs to facilitate a reverse classroom model, improving engagement and comprehension.</li>
+              <li>Implemented multi-camera <strong>3D object detection pipelines in Python</strong> using <strong>PyTorch</strong> and <strong>MMDetection3D</strong> to support real-time perception research for autonomous driving across standard datasets (DAIR-V2X, KITTI).</li>
+              <li>Performed <strong>performance evaluation and benchmarking</strong> of <strong>BEV-based perception models</strong> by running training and inference pipelines and analyzing detection metrics for roadside-infrastructure scenarios.</li>
             </ul>
           </li>
 
           <li className="list-item">
             <div className="role-line">
-              <strong>Information Technology Consultant</strong> — Deloitte
+              <strong>Undergraduate Teaching Assistant</strong> — University of Wisconsin–Madison
+              <span className="meta">Aug 2025 – Present · Madison, WI</span>
+            </div>
+            <ul className="bullet-list stagger">
+              <li>Instructed <strong>100+ students</strong> through one-on-one tutoring and weekly office hours, reinforcing <strong>digital logic</strong>, <strong>RTL design</strong>, and <strong>SystemVerilog</strong> concepts while guiding students through <strong>debugging</strong> and <strong>root-cause analysis</strong>.</li>
+              <li>Collaborated with professors and fellow TAs to implement a <strong>reverse classroom model</strong>, facilitating active learning through guided debugging, problem decomposition, and interactive problem-solving sessions.</li>
+            </ul>
+          </li>
+
+          <li className="list-item">
+            <div className="role-line">
+              <strong>Information Technology Consulting Intern</strong> — Deloitte
               <span className="meta">Jun 2025 – Aug 2025 · Seoul, South Korea</span>
             </div>
             <ul className="bullet-list stagger">
-              <li>Contributed to the digital transformation of a $50B financial institution by assessing IT infrastructure and document management systems to identify modernization gaps.</li>
-              <li>Applied enterprise architecture frameworks to conduct a structured technical review, producing a roadmap that streamlined documentation workflows.</li>
-              <li>Evaluated enterprise technology options (AI-OCR, blockchain integration, eForm systems) with financial analysis and technical feasibility using standardized cost estimates.</li>
-              <li>Led stakeholder interviews and system analysis to gather requirements and translate business needs into application and technology architecture improvements.</li>
+              <li>Initiated the digital transformation of a <strong>$50B financial institution</strong> using <strong>enterprise architecture frameworks</strong> to develop a <strong>modernization roadmap</strong> focused on <strong>process improvement</strong> and <strong>workflow optimization</strong>.</li>
+              <li>Assessed <strong>AI-OCR, blockchain, and eForm solutions</strong> through cross-industry <strong>benchmarking</strong>, <strong>requirements analysis</strong>, and a <strong>KPI-based scoring framework</strong> incorporating <strong>cost–benefit analysis</strong> for enterprise digitization.</li>
+              <li>Partnered with stakeholders to <strong>analyze Java-based application source code</strong> and <strong>define a reference architecture</strong> by creating inter-application connections that streamlined workflows and improved system efficiency.</li>
             </ul>
           </li>
 
