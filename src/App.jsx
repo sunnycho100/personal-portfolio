@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TopNav from './components/TopNav.jsx';
 import Hero from './components/Hero.jsx';
 import About from './components/About.jsx';
@@ -13,6 +13,23 @@ import Contact from './components/Contact.jsx';
 
 export default function App() {
   const [reloadComments, setReloadComments] = useState(0);
+  const [githubData, setGithubData] = useState(null);
+
+  // Fetch GitHub data once at app level
+  useEffect(() => {
+    fetch("http://localhost:4000/api/github/overview")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load GitHub data");
+        return res.json();
+      })
+      .then((json) => {
+        setGithubData(json);
+      })
+      .catch((err) => {
+        console.error("GitHub data fetch error:", err);
+      });
+  }, []);
+
   return (
     <>
       <TopNav />
@@ -21,9 +38,9 @@ export default function App() {
         <About />
         <Education />
         <Experience />
-        <Skills />
+        <Skills githubData={githubData} />
         <Activities />
-        <Github />   {/* new tab section between Activities and More */}
+        <Github githubData={githubData} />   {/* new tab section between Activities and More */}
         <More reloadComments={reloadComments} />
         <Contact onCommentAdded={() => setReloadComments(prev => prev + 1)} />
       </div>

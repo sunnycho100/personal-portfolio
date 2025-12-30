@@ -65,11 +65,9 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background: var(--tabbar-bg);
-  border: 1px solid var(--nav-border);
+  background: var(--nav-bg);
   border-radius: 12px;
   padding: 6px 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .nav-links {

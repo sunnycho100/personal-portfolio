@@ -26,26 +26,9 @@ function formatDate(iso) {
   });
 }
 
-export default function Github() {
-  const [data, setData] = useState(null);
-  const [status, setStatus] = useState("idle"); // idle | loading | error
-
-  useEffect(() => {
-    setStatus("loading");
-    fetch("http://localhost:4000/api/github/overview")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load GitHub data");
-        return res.json();
-      })
-      .then((json) => {
-        setData(json);
-        setStatus("idle");
-      })
-      .catch((err) => {
-        console.error(err);
-        setStatus("error");
-      });
-  }, []);
+export default function Github({ githubData }) {
+  const data = githubData;
+  const status = data ? "idle" : "loading";
 
   return (
     <section id="github" className="section">
@@ -54,12 +37,6 @@ export default function Github() {
 
         {status === "loading" && (
           <p style={{ padding: "0 24px 24px" }}>Loading GitHub data…</p>
-        )}
-
-        {status === "error" && (
-          <p style={{ padding: "0 24px 24px", color: "red" }}>
-            Could not load GitHub data. Try again later.
-          </p>
         )}
 
         {status === "idle" && data && (
