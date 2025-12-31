@@ -68,3 +68,12 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## TODO
+
+### Work Experience Timeline
+- [ ] Create automatic date extraction function for work experience timeline
+  - Currently, dates are manually extracted and stored in the `experienceData` array in `Experience.jsx`
+  - Future enhancement: Parse the experience descriptions to automatically extract start dates and display them on the timeline
+  - This will eliminate the need to maintain two separate data sources (one for display, one for timeline)
+

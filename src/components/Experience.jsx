@@ -1,8 +1,54 @@
 import Reveal from './Reveal.jsx';
+import Timeline from './Timeline.jsx';
 
 export default function Experience() {
+  // Experience data with extracted dates
+  // TODO: Create automatic date extraction function (see README)
+  const experienceData = [
+    {
+      role: "Robotics Research Intern",
+      company: "Connected & Autonomous Transportation Systems Lab",
+      startDate: "2025-09-01",
+      displayDate: "Sep 2025",
+      current: true
+    },
+    {
+      role: "Undergraduate Teaching Assistant",
+      company: "University of Wisconsin–Madison",
+      startDate: "2025-08-01",
+      displayDate: "Aug 2025",
+      current: true
+    },
+    {
+      role: "Information Technology Consulting Intern",
+      company: "Deloitte",
+      startDate: "2025-06-01",
+      displayDate: "Jun 2025",
+      current: false
+    },
+    {
+      role: "Sergeant, Network Engineer",
+      company: "Republic of Korea Army",
+      startDate: "2023-06-01",
+      displayDate: "Jun 2023",
+      current: false
+    },
+    {
+      role: "Student Tutor",
+      company: "University of Wisconsin–Madison",
+      startDate: "2025-01-01",
+      displayDate: "Jan 2025",
+      current: true
+    }
+  ];
+
   return (
     <section id="experience" className="section">
+      <Reveal delay="180ms" className="list-container">
+        <h2>Timeline</h2>
+        <Timeline experiences={experienceData} />
+      </Reveal>
+
       <Reveal delay="220ms" className="list-container">
         <h2>Work Experience</h2>
         <ul className="item-list stagger">
