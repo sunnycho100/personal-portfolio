@@ -16,13 +16,18 @@ export default function Timeline({ experiences }) {
   return (
     <div className="timeline-container">
       <div className="timeline-wrapper">
-        <div className="timeline-line"></div>
+        <div 
+          className="timeline-line"
+          style={{ 
+            height: sortedExperiences.length > 1 ? '90%' : '0%' 
+          }}
+        ></div>
         
-        {/* Experience markers */}
+        {/* Experience markers */}}
         {sortedExperiences.map((exp, index) => {
-          // Equal spacing from 0% to 100%
+          // Equal spacing from 0% to 90% (leaving room for bottom card)
           const position = sortedExperiences.length > 1 
-            ? (100 / (sortedExperiences.length - 1)) * index 
+            ? (90 / (sortedExperiences.length - 1)) * index 
             : 0;
           
           return (
