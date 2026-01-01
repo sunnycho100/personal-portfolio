@@ -9,6 +9,7 @@ export default function Experience() {
       role: "Robotics Research Intern",
       company: "Connected & Autonomous Transportation Systems Lab",
       startDate: "2025-09-01",
+      endDate: null,
       displayDate: "Sep 2025",
       current: true
     },
@@ -16,6 +17,7 @@ export default function Experience() {
       role: "Undergraduate Teaching Assistant",
       company: "University of Wisconsin–Madison",
       startDate: "2025-08-01",
+      endDate: null,
       displayDate: "Aug 2025",
       current: true
     },
@@ -23,6 +25,7 @@ export default function Experience() {
       role: "Information Technology Consulting Intern",
       company: "Deloitte",
       startDate: "2025-06-01",
+      endDate: "2025-08-01",
       displayDate: "Jun 2025",
       current: false
     },
@@ -30,6 +33,7 @@ export default function Experience() {
       role: "Sergeant, Network Engineer",
       company: "Republic of Korea Army",
       startDate: "2023-06-01",
+      endDate: "2024-12-01",
       displayDate: "Jun 2023",
       current: false
     },
@@ -37,6 +41,7 @@ export default function Experience() {
       role: "Student Tutor",
       company: "University of Wisconsin–Madison",
       startDate: "2025-01-01",
+      endDate: null,
       displayDate: "Jan 2025",
       current: true
     }
