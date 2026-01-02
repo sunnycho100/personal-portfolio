@@ -18,23 +18,24 @@ export default function Timeline({ experiences }) {
       <div className="timeline-wrapper">
         <div 
           className="timeline-line"
-          style={{ 
-            height: sortedExperiences.length > 1 ? '90%' : '0%' 
-          }}
         ></div>
         
         {/* Experience markers */}}
         {sortedExperiences.map((exp, index) => {
-          // Equal spacing from 0% to 90% (leaving room for bottom card)
+          // Calculate position starting from the top offset
+          // The first item starts at the offset, then spreads downward
+          const totalRange = 90; // percentage of container height to use
           const position = sortedExperiences.length > 1 
-            ? (90 / (sortedExperiences.length - 1)) * index 
+            ? (totalRange / (sortedExperiences.length - 1)) * index 
             : 0;
           
           return (
             <div
               key={index}
               className="timeline-item"
-              style={{ top: `${position}%` }}
+              style={{ 
+                top: `calc(${position}% + var(--timeline-top-offset))` 
+              }}
             >
               <div className="timeline-dot"></div>
               <div className="timeline-content">

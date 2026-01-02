@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import Reveal from './Reveal.jsx';
 import Timeline from './Timeline.jsx';
 
 export default function Experience() {
+  const [activeView, setActiveView] = useState('timeline'); // 'timeline' or 'list'
+
   // Experience data with extracted dates
   // TODO: Create automatic date extraction function (see README)
   const experienceData = [
@@ -50,13 +53,35 @@ export default function Experience() {
   return (
     <section id="experience" className="section">
       <Reveal delay="180ms" className="list-container">
-        <h2>Timeline</h2>
-        <Timeline experiences={experienceData} />
-      </Reveal>
+        <h2>Experience</h2>
+        
+        {/* Internal tab switcher */}
+        <div className="experience-tab-switcher">
+          <button 
+            className={`experience-tab ${activeView === 'timeline' ? 'active' : ''}`}
+            onClick={() => setActiveView('timeline')}
+          >
+            Timeline
+          </button>
+          <button 
+            className={`experience-tab ${activeView === 'list' ? 'active' : ''}`}
+            onClick={() => setActiveView('list')}
+          >
+            Work Experience
+          </button>
+        </div>
 
-      <Reveal delay="220ms" className="list-container">
-        <h2>Work Experience</h2>
-        <ul className="item-list stagger">
+        {/* Timeline View */}
+        {activeView === 'timeline' && (
+          <div className="experience-view">
+            <Timeline experiences={experienceData} />
+          </div>
+        )}
+
+        {/* List View */}
+        {activeView === 'list' && (
+          <div className="experience-view">
+            <ul className="item-list stagger">
           <li className="list-item">
             <div className="role-line">
               <strong>Robotics Research Intern</strong> — Connected & Autonomous Transportation Systems Lab (Prof. Xiaopeng Li)
@@ -116,6 +141,8 @@ export default function Experience() {
             </ul>
           </li>
         </ul>
+          </div>
+        )}
       </Reveal>
     </section>
   );
