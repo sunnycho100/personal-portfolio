@@ -5,32 +5,35 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-01-03
+
+### Added
+- Book cover API integration (Open Library API + Google Books API)
+- Dynamic book cover loading with fallback system
+- Automatic book cover download script (Node.js)
+- API loading indicators and badges
+- Book covers utility module
+
+### Changed
+- BookCarousel component now supports API-loaded covers
+- Enhanced error handling for image loading
+
 ## [1.2.0] - 2026-01-03
 
 ### Changed
-- **Book Carousel Navigation**: Completely modernized navigation buttons with professional SVG icons replacing simple arrow characters
-- **Modal Popup Design**: Major visual overhaul of book detail modals with modern styling and improved UX
+- Book Carousel Navigation with modern SVG icons
+- Modal Popup Design with glassmorphism effects
 
 ### Added
-- Glassmorphism effects on carousel navigation buttons with backdrop blur
-- Smooth slide-up animations for modal entrance with fade-in backdrop
-- Modern gradient backgrounds and sophisticated shadow systems
-- Enhanced mobile responsive design for modal components
-- Professional typography hierarchy in modal headers
-- Card-based layout system for comments section
-- Modern form styling with improved focus states and transitions
+- Smooth animations and transitions
+- Enhanced mobile responsive design
+- Professional typography hierarchy
+- Card-based layout system for comments
 
 ### Improved
-- Enhanced accessibility with proper ARIA labels on navigation buttons
-- Better visual feedback with hover animations and scaling effects
-- Optimized mobile experience with responsive layouts
-- Professional color palette using contemporary grays and blues
-- Smooth transitions throughout the UI components
-
-### Technical Details
-- Updated `BookCarousel.jsx` component structure for modern modal layout
-- Redesigned CSS architecture for carousel buttons and modal styling
-- Implemented modern web design standards following current UX practices
+- Enhanced accessibility with ARIA labels
+- Better visual feedback with hover animations
+- Modern color palette and design standards
 
 ---
 

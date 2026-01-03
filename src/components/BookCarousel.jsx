@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { createPortal } from "react-dom";
+import { getBookCover } from '../utils/bookCovers.js';
 
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
@@ -235,6 +236,43 @@ export default function BookCarousel({ books = [] }) {
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [booksWithCovers, setBooksWithCovers] = useState(books);
+  const [loadingCovers, setLoadingCovers] = useState(false);
+
+  // Load book covers from APIs
+  useEffect(() => {
+    async function loadCovers() {
+      if (books.length === 0) return;
+      
+      setLoadingCovers(true);
+      
+      const booksWithApiCovers = await Promise.all(
+        books.map(async (book) => {
+          // Skip if book already has a valid cover or if it's a local path
+          if (book.src && !book.src.includes('placeholder')) {
+            return book;
+          }
+          
+          try {
+            const apiCover = await getBookCover(book.title, book.author, book.src);
+            return {
+              ...book,
+              src: apiCover,
+              isApiCover: apiCover !== book.src
+            };
+          } catch (error) {
+            console.warn(`Failed to load cover for ${book.title}:`, error);
+            return book;
+          }
+        })
+      );
+      
+      setBooksWithCovers(booksWithApiCovers);
+      setLoadingCovers(false);
+    }
+    
+    loadCovers();
+  }, [books]);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -255,7 +293,7 @@ export default function BookCarousel({ books = [] }) {
       track.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [booksWithCovers]);
 
   const scrollByViewport = (dir) => {
     const track = trackRef.current;
@@ -280,13 +318,26 @@ export default function BookCarousel({ books = [] }) {
 
         <div className="carousel-viewport">
           <div className="carousel-track" ref={trackRef}>
-            {books.map((b, i) => (
+            {booksWithCovers.map((b, i) => (
               <div
                 key={b.id || i}
-                className="carousel-item"
+                className={`carousel-item ${loadingCovers ? 'loading' : ''}`}
                 onClick={() => setSelected({ index: i })}
               >
-                <img src={b.src} alt={b.title} loading="lazy" />
+                <img 
+                  src={b.src} 
+                  alt={b.title} 
+                  loading="lazy"
+                  onError={(e) => {
+                    // Fallback to local image if API image fails
+                    e.target.src = books[i]?.src || '/books/default-book-cover.jpg';
+                  }}
+                />
+                {b.isApiCover && (
+                  <div className="api-badge" title="Cover loaded from API">
+                    API
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -306,7 +357,7 @@ export default function BookCarousel({ books = [] }) {
 
       {selected && (
         <BookModal
-          book={books[selected.index]}
+          book={booksWithCovers[selected.index] || books[selected.index]}
           onClose={() => setSelected(null)}
         />
       )}
