@@ -136,66 +136,88 @@ function BookModal({ book, onClose }) {
         style={{ left: pos.left, top: pos.top, position: "absolute" }}
       >
         <div className="modal-header" onPointerDown={onPointerDown}>
-          {/* macOS style close button */}
-          <button className="modal-close-apple" onClick={onClose} aria-label="Close">
-            <span className="apple-close-dot">
-              <span className="apple-x-line apple-x-line-1" />
-              <span className="apple-x-line apple-x-line-2" />
-            </span>
+          <div className="modal-header-content">
+            <h2 className="modal-title">{book.title}</h2>
+            <p className="modal-subtitle">Book Details</p>
+          </div>
+          <button className="modal-close-btn" onClick={onClose} aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m18 6-12 12"/>
+              <path d="m6 6 12 12"/>
+            </svg>
           </button>
-
-          <div className="modal-header-title">{book.title}</div>
         </div>
 
         <div className="modal-body">
           <div className="modal-left">
-            <img src={book.src} alt={book.title} loading="lazy" />
+            <div className="book-cover-container">
+              <img src={book.src} alt={book.title} loading="lazy" />
+            </div>
           </div>
 
           <div className="modal-right">
-            <h3>{book.title}</h3>
-            {book.author && <p className="meta-author">{book.author}</p>}
-            {book.review && <p className="book-review">{book.review}</p>}
+            <div className="book-info">
+              <h3 className="book-title">{book.title}</h3>
+              {book.author && <p className="book-author">{book.author}</p>}
+              {book.review && <div className="book-review">{book.review}</div>}
+            </div>
 
-            <label>Your one-line takeaway</label>
-            <textarea
-              className="quick-desc"
-              value={desc}
-              onChange={(e) => saveNotes(e.target.value)}
-              rows={3}
-            />
+            <div className="takeaway-section">
+              <label className="section-label">Your Takeaway</label>
+              <textarea
+                className="quick-desc"
+                value={desc}
+                onChange={(e) => saveNotes(e.target.value)}
+                placeholder="Share your key insights from this book..."
+                rows={3}
+              />
+            </div>
 
-            <div className="comments">
-              <h4>Comments</h4>
+            <div className="comments-section">
+              <h4 className="section-title">Discussion</h4>
 
-              {comments.length === 0 && (
-                <p style={{ color: "#666" }}>No comments yet.</p>
-              )}
-
-              {comments.map((c, i) => (
-                <div key={i} className="comment-item">
-                  <div className="comment-name">{c.name}</div>
-                  <div className="comment-time">
-                    {new Date(c.ts).toLocaleString()}
+              <div className="comments-list">
+                {comments.length === 0 && (
+                  <div className="empty-state">
+                    <p>Be the first to share your thoughts!</p>
                   </div>
-                  <div className="comment-text">{c.text}</div>
-                </div>
-              ))}
+                )}
+
+                {comments.map((c, i) => (
+                  <div key={i} className="comment-card">
+                    <div className="comment-header">
+                      <span className="comment-author">{c.name}</span>
+                      <span className="comment-time">
+                        {new Date(c.ts).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className="comment-text">{c.text}</p>
+                  </div>
+                ))}
+              </div>
 
               <div className="comment-form">
-                <input
-                  placeholder="Name (optional)"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
+                <div className="form-row">
+                  <input
+                    className="name-input"
+                    placeholder="Your name (optional)"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </div>
                 <textarea
+                  className="comment-textarea"
                   rows={3}
-                  placeholder="Write a comment…"
+                  placeholder="Share your thoughts about this book..."
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                 />
-                <button className="primary-button" onClick={addComment}>
-                  Post comment
+                <button className="submit-button" onClick={addComment}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m22 2-7 20-4-9-9-4Z"/>
+                    <path d="M22 2 11 13"/>
+                  </svg>
+                  Post Comment
                 </button>
               </div>
             </div>
@@ -249,8 +271,11 @@ export default function BookCarousel({ books = [] }) {
           className="carousel-btn prev"
           disabled={!canPrev}
           onClick={() => scrollByViewport(-1)}
+          aria-label="Previous books"
         >
-          ‹
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
         </button>
 
         <div className="carousel-viewport">
@@ -271,8 +296,11 @@ export default function BookCarousel({ books = [] }) {
           className="carousel-btn next"
           disabled={!canNext}
           onClick={() => scrollByViewport(1)}
+          aria-label="Next books"
         >
-          ›
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
         </button>
       </div>
 
