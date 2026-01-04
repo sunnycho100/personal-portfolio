@@ -1,8 +1,154 @@
 // src/components/More.jsx
 import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import Reveal from './Reveal.jsx';
 import BookCarousel from './BookCarousel.jsx';
 import CommentsSection from './CommentsSection.jsx';
+
+// Cover Selection Modal Component
+function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const modalStyles = {
+    overlay: {
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0,0,0,0.7)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999,
+      padding: '20px'
+    },
+    modal: {
+      background: 'white',
+      borderRadius: '12px',
+      padding: '24px',
+      maxWidth: '800px',
+      maxHeight: '90vh',
+      overflow: 'auto',
+      position: 'relative'
+    },
+    header: {
+      marginBottom: '16px',
+      paddingRight: '30px'
+    },
+    title: {
+      margin: '0 0 4px 0',
+      fontSize: '20px',
+      color: '#212529'
+    },
+    subtitle: {
+      margin: 0,
+      color: '#6c757d',
+      fontSize: '14px'
+    },
+    closeBtn: {
+      position: 'absolute',
+      top: '16px',
+      right: '16px',
+      background: 'none',
+      border: 'none',
+      fontSize: '24px',
+      cursor: 'pointer',
+      color: '#6c757d'
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
+      gap: '16px'
+    },
+    coverCard: {
+      border: '2px solid #e9ecef',
+      borderRadius: '8px',
+      padding: '12px',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      textAlign: 'center'
+    },
+    coverImage: {
+      width: '100%',
+      height: '180px',
+      objectFit: 'cover',
+      borderRadius: '4px',
+      marginBottom: '8px'
+    },
+    coverTitle: {
+      fontSize: '12px',
+      fontWeight: '600',
+      color: '#212529',
+      marginBottom: '4px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    },
+    coverAuthor: {
+      fontSize: '11px',
+      color: '#6c757d'
+    },
+    noCover: {
+      textAlign: 'center',
+      padding: '40px',
+      color: '#6c757d'
+    }
+  };
+
+  return createPortal(
+    <div style={modalStyles.overlay} onClick={onClose}>
+      <div style={modalStyles.modal} onClick={e => e.stopPropagation()}>
+        <button style={modalStyles.closeBtn} onClick={onClose}>×</button>
+        <div style={modalStyles.header}>
+          <h3 style={modalStyles.title}>Choose a Cover</h3>
+          <p style={modalStyles.subtitle}>Select one of the covers below for "{title}"</p>
+        </div>
+        
+        {covers.length === 0 ? (
+          <div style={modalStyles.noCover}>
+            <p>No covers found for this book.</p>
+            <button 
+              onClick={() => onSelect(null)}
+              style={{ padding: '8px 16px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Add with default cover
+            </button>
+          </div>
+        ) : (
+          <div style={modalStyles.grid}>
+            {covers.map((cover, index) => (
+              <div
+                key={cover.id || index}
+                style={modalStyles.coverCard}
+                onClick={() => onSelect(cover.coverUrl)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#007bff';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#e9ecef';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <img 
+                  src={cover.coverUrl} 
+                  alt={cover.title}
+                  style={modalStyles.coverImage}
+                  onError={(e) => { e.target.src = '/books/default-book-cover.jpg'; }}
+                />
+                <div style={modalStyles.coverTitle}>{cover.title}</div>
+                <div style={modalStyles.coverAuthor}>{cover.author}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>,
+    document.body
+  );
+}
 
 export default function More({ reloadComments }) {
   const [books, setBooks] = useState([]);
@@ -10,6 +156,9 @@ export default function More({ reloadComments }) {
   const [newBookTitle, setNewBookTitle] = useState('');
   const [newBookAuthor, setNewBookAuthor] = useState('');
   const [addingBook, setAddingBook] = useState(false);
+  const [searchingCovers, setSearchingCovers] = useState(false);
+  const [coverOptions, setCoverOptions] = useState([]);
+  const [showCoverModal, setShowCoverModal] = useState(false);
 
   // Static fallback books (your original books)
   const fallbackBooks = useMemo(() => [
@@ -52,6 +201,80 @@ export default function More({ reloadComments }) {
     
     fetchBooks();
   }, [fallbackBooks]);
+
+  // Search for book covers
+  const searchCovers = async (e) => {
+    e.preventDefault();
+    if (!newBookTitle.trim()) return;
+
+    setSearchingCovers(true);
+    try {
+      const params = new URLSearchParams({ title: newBookTitle.trim() });
+      if (newBookAuthor.trim()) {
+        params.append('author', newBookAuthor.trim());
+      }
+      
+      const response = await fetch(`http://localhost:5001/api/books/search?${params}`);
+      if (response.ok) {
+        const covers = await response.json();
+        setCoverOptions(covers);
+        setShowCoverModal(true);
+      } else {
+        throw new Error('Failed to search covers');
+      }
+    } catch (error) {
+      console.error('Failed to search covers:', error);
+      alert('Failed to search for book covers. Please try again.');
+    } finally {
+      setSearchingCovers(false);
+    }
+  };
+
+  // Add book with selected cover
+  const addBookWithCover = async (selectedCoverUrl) => {
+    setShowCoverModal(false);
+    setAddingBook(true);
+    
+    try {
+      const response = await fetch('http://localhost:5001/api/books', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: newBookTitle.trim(),
+          author: newBookAuthor.trim(),
+          imagePath: selectedCoverUrl, // Pass the chosen cover URL
+        }),
+      });
+
+      if (response.ok) {
+        const newBook = await response.json();
+        const transformedBook = {
+          id: newBook.id,
+          src: newBook.imagePath,
+          title: newBook.title,
+          author: newBook.author || '',
+          review: newBook.review || ''
+        };
+        setBooks(prev => [transformedBook, ...prev]);
+        
+        // Clear form
+        setNewBookTitle('');
+        setNewBookAuthor('');
+        setCoverOptions([]);
+        
+        alert(`Successfully added "${newBook.title}" to your book collection!`);
+      } else {
+        throw new Error('Failed to add book');
+      }
+    } catch (error) {
+      console.error('Failed to add book:', error);
+      alert('Failed to add book. Please try again.');
+    } finally {
+      setAddingBook(false);
+    }
+  };
 
   const addNewBook = async (e) => {
     e.preventDefault();
@@ -119,7 +342,7 @@ export default function More({ reloadComments }) {
               {/* Add New Book Form */}
               <div className="add-book-form" style={{ marginBottom: '20px', padding: '15px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e9ecef' }}>
                 <h4 style={{ margin: '0 0 12px 0', color: '#495057', fontSize: '16px' }}>Add a New Book</h4>
-                <form onSubmit={addNewBook} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <form onSubmit={searchCovers} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <input
                     type="text"
                     placeholder="Book title (e.g., Meditations)"
@@ -145,23 +368,53 @@ export default function More({ reloadComments }) {
                       fontSize: '14px'
                     }}
                   />
-                  <button 
-                    type="submit" 
-                    disabled={addingBook || !newBookTitle.trim()}
-                    style={{ 
-                      padding: '8px 16px', 
-                      background: addingBook ? '#6c757d' : '#007bff', 
-                      color: 'white', 
-                      border: 'none', 
-                      borderRadius: '4px', 
-                      cursor: addingBook ? 'not-allowed' : 'pointer',
-                      fontSize: '14px'
-                    }}
-                  >
-                    {addingBook ? 'Adding Book...' : 'Add Book from Google Books API'}
-                  </button>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button 
+                      type="submit" 
+                      disabled={searchingCovers || addingBook || !newBookTitle.trim()}
+                      style={{ 
+                        flex: 1,
+                        padding: '8px 16px', 
+                        background: (searchingCovers || addingBook) ? '#6c757d' : '#007bff', 
+                        color: 'white', 
+                        border: 'none', 
+                        borderRadius: '4px', 
+                        cursor: (searchingCovers || addingBook) ? 'not-allowed' : 'pointer',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {searchingCovers ? 'Searching...' : 'Search Covers (Choose from 5)'}
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={addNewBook}
+                      disabled={searchingCovers || addingBook || !newBookTitle.trim()}
+                      style={{ 
+                        padding: '8px 16px', 
+                        background: (searchingCovers || addingBook) ? '#6c757d' : '#28a745', 
+                        color: 'white', 
+                        border: 'none', 
+                        borderRadius: '4px', 
+                        cursor: (searchingCovers || addingBook) ? 'not-allowed' : 'pointer',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {addingBook ? 'Adding...' : 'Quick Add'}
+                    </button>
+                  </div>
                 </form>
               </div>
+
+              {/* Cover Selection Modal */}
+              {showCoverModal && (
+                <CoverSelectionModal
+                  covers={coverOptions}
+                  title={newBookTitle}
+                  author={newBookAuthor}
+                  onSelect={addBookWithCover}
+                  onClose={() => setShowCoverModal(false)}
+                />
+              )}
 
               {loading ? (
                 <p>Loading books...</p>

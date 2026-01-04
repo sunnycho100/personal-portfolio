@@ -166,7 +166,50 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
-// get book cover from Google Books API and create book entry
+// search for book covers from Google Books API (returns up to 5 options)
+app.get("/api/books/search", async (req, res) => {
+  const { title, author } = req.query;
+  
+  if (!title) {
+    return res.status(400).json({ error: "Title is required" });
+  }
+
+  try {
+    const query = author ? `${title}+inauthor:${author}` : title;
+    const googleResponse = await axios.get(
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`
+    );
+    
+    const results = [];
+    
+    if (googleResponse.data.items && googleResponse.data.items.length > 0) {
+      for (const item of googleResponse.data.items) {
+        if (item.volumeInfo && item.volumeInfo.imageLinks) {
+          const cover = item.volumeInfo.imageLinks.large || 
+                       item.volumeInfo.imageLinks.thumbnail || 
+                       item.volumeInfo.imageLinks.smallThumbnail;
+          if (cover) {
+            results.push({
+              id: item.id,
+              title: item.volumeInfo.title || title,
+              author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : author || '',
+              coverUrl: cover,
+              publishedDate: item.volumeInfo.publishedDate || '',
+              description: item.volumeInfo.description ? item.volumeInfo.description.slice(0, 150) + '...' : ''
+            });
+          }
+        }
+      }
+    }
+    
+    res.json(results);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to search books" });
+  }
+});
+
+// create book entry with chosen cover
 app.post("/api/books", async (req, res) => {
   const parsed = BookInput.safeParse(req.body);
   if (!parsed.success) {
@@ -174,23 +217,27 @@ app.post("/api/books", async (req, res) => {
   }
   
   const { title, author, review } = parsed.data;
+  // Allow passing imagePath directly if user chose a cover
+  const chosenImagePath = req.body.imagePath;
 
   try {
-    // Fetch cover from Google Books API
-    const query = author ? `${title}+inauthor:${author}` : title;
-    const googleResponse = await axios.get(
-      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=1`
-    );
+    let imagePath = chosenImagePath || '/books/default-book-cover.jpg';
     
-    let imagePath = '/books/default-book-cover.jpg'; // fallback
-    
-    if (googleResponse.data.items && googleResponse.data.items.length > 0) {
-      const book = googleResponse.data.items[0];
-      if (book.volumeInfo && book.volumeInfo.imageLinks) {
-        imagePath = book.volumeInfo.imageLinks.large || 
-                   book.volumeInfo.imageLinks.thumbnail || 
-                   book.volumeInfo.imageLinks.smallThumbnail ||
-                   imagePath;
+    // Only fetch from Google if no cover was provided
+    if (!chosenImagePath) {
+      const query = author ? `${title}+inauthor:${author}` : title;
+      const googleResponse = await axios.get(
+        `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=1`
+      );
+      
+      if (googleResponse.data.items && googleResponse.data.items.length > 0) {
+        const book = googleResponse.data.items[0];
+        if (book.volumeInfo && book.volumeInfo.imageLinks) {
+          imagePath = book.volumeInfo.imageLinks.large || 
+                     book.volumeInfo.imageLinks.thumbnail || 
+                     book.volumeInfo.imageLinks.smallThumbnail ||
+                     imagePath;
+        }
       }
     }
 
