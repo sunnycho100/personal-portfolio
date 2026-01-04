@@ -22,6 +22,43 @@ app.use(
   })
 );
 
+// Helper function to enhance Google Books image quality
+function enhanceImageQuality(url) {
+  if (!url) return url;
+  // Replace zoom=1 with zoom=3 for higher quality
+  let enhanced = url.replace(/zoom=1/g, 'zoom=3');
+  // If it's a Google Books image, try to get higher resolution
+  if (enhanced.includes('books.google.com') && !enhanced.includes('&fife=')) {
+    enhanced += '&fife=w800';
+  }
+  return enhanced;
+}
+
+// Helper function to get cover from Open Library (often better quality)
+async function getOpenLibraryCover(title, author = '') {
+  try {
+    const query = author ? `title:${title} author:${author}` : title;
+    const response = await axios.get(
+      `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=1`
+    );
+    
+    const data = response.data;
+    if (data.docs && data.docs.length > 0) {
+      const book = data.docs[0];
+      if (book.cover_i) {
+        return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+      }
+      if (book.isbn && book.isbn[0]) {
+        return `https://covers.openlibrary.org/b/isbn/${book.isbn[0]}-L.jpg`;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('Open Library error:', error.message);
+    return null;
+  }
+}
+
 // ----------------- GitHub overview (yours, unchanged) -----------------
 const GITHUB_USERNAME = "sunnycho100";
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -175,12 +212,26 @@ app.get("/api/books/search", async (req, res) => {
   }
 
   try {
+    const results = [];
+    
+    // Try Open Library first (often has better quality)
+    const openLibCover = await getOpenLibraryCover(title, author);
+    if (openLibCover) {
+      results.push({
+        id: 'openlibrary',
+        title: title,
+        author: author || '',
+        coverUrl: openLibCover,
+        publishedDate: '',
+        description: 'From Open Library (High Quality)'
+      });
+    }
+    
+    // Then get Google Books results
     const query = author ? `${title}+inauthor:${author}` : title;
     const googleResponse = await axios.get(
       `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=5`
     );
-    
-    const results = [];
     
     if (googleResponse.data.items && googleResponse.data.items.length > 0) {
       for (const item of googleResponse.data.items) {
@@ -193,7 +244,7 @@ app.get("/api/books/search", async (req, res) => {
               id: item.id,
               title: item.volumeInfo.title || title,
               author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : author || '',
-              coverUrl: cover,
+              coverUrl: enhanceImageQuality(cover), // Enhanced quality
               publishedDate: item.volumeInfo.publishedDate || '',
               description: item.volumeInfo.description ? item.volumeInfo.description.slice(0, 150) + '...' : ''
             });
@@ -233,10 +284,12 @@ app.post("/api/books", async (req, res) => {
       if (googleResponse.data.items && googleResponse.data.items.length > 0) {
         const book = googleResponse.data.items[0];
         if (book.volumeInfo && book.volumeInfo.imageLinks) {
-          imagePath = book.volumeInfo.imageLinks.large || 
-                     book.volumeInfo.imageLinks.thumbnail || 
-                     book.volumeInfo.imageLinks.smallThumbnail ||
-                     imagePath;
+          imagePath = enhanceImageQuality(
+            book.volumeInfo.imageLinks.large || 
+            book.volumeInfo.imageLinks.thumbnail || 
+            book.volumeInfo.imageLinks.smallThumbnail ||
+            imagePath
+          );
         }
       }
     }

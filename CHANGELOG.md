@@ -5,6 +5,23 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.2] - 2026-01-04
+
+### Added
+- Open Library integration for higher quality covers
+
+### Changed
+- Enhanced Google Books image quality (3x zoom, 800px width)
+- Cover selection now shows 6 options (Open Library + 5 Google Books)
+- Open Library covers shown first (higher quality)
+
+## [1.4.1] - 2026-01-04
+
+### Added
+- Cover selection popup - choose from 5 Google Books covers before adding
+- `/api/books/search` endpoint - returns multiple cover options
+- Books persist to MySQL database, load automatically on page refresh
+
 ## [1.4.0] - 2026-01-04
 
 ### Added
