@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: false, limit: "100kb" }));
 // allow your local React dev server
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: ["http://localhost:5173", "http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
     credentials: true,
   })
 );
@@ -103,6 +103,13 @@ const CommentInput = z.object({
   message: z.string().trim().min(1).max(500),
 });
 
+// ----------------- Books API -----------------
+const BookInput = z.object({
+  title: z.string().trim().min(1).max(200),
+  author: z.string().trim().max(150).optional().or(z.literal("")),
+  review: z.string().trim().max(500).optional().or(z.literal("")),
+});
+
 // health check
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
@@ -141,6 +148,85 @@ app.post("/api/comments", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Failed to create comment" });
+  }
+});
+
+// ----------------- Books API -----------------
+
+// list all books, newest first
+app.get("/api/books", async (req, res) => {
+  try {
+    const books = await prisma.book.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    res.json(books);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to fetch books" });
+  }
+});
+
+// get book cover from Google Books API and create book entry
+app.post("/api/books", async (req, res) => {
+  const parsed = BookInput.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+  }
+  
+  const { title, author, review } = parsed.data;
+
+  try {
+    // Fetch cover from Google Books API
+    const query = author ? `${title}+inauthor:${author}` : title;
+    const googleResponse = await axios.get(
+      `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=1`
+    );
+    
+    let imagePath = '/books/default-book-cover.jpg'; // fallback
+    
+    if (googleResponse.data.items && googleResponse.data.items.length > 0) {
+      const book = googleResponse.data.items[0];
+      if (book.volumeInfo && book.volumeInfo.imageLinks) {
+        imagePath = book.volumeInfo.imageLinks.large || 
+                   book.volumeInfo.imageLinks.thumbnail || 
+                   book.volumeInfo.imageLinks.smallThumbnail ||
+                   imagePath;
+      }
+    }
+
+    // Create book in database
+    const created = await prisma.book.create({
+      data: {
+        title,
+        author: author && author.length ? author : null,
+        imagePath,
+        review: review && review.length ? review : null,
+      },
+    });
+    
+    res.status(201).json(created);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to create book entry" });
+  }
+});
+
+// delete a book
+app.delete("/api/books/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid book ID" });
+    }
+
+    await prisma.book.delete({
+      where: { id }
+    });
+    
+    res.json({ success: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to delete book" });
   }
 });
 

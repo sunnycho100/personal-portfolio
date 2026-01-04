@@ -18,6 +18,16 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Function to find an available port starting from a given port
+find_available_port() {
+    local port=$1
+    while lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; do
+        echo "⚠️  Port $port is in use, trying port $((port + 1))..."
+        port=$((port + 1))
+    done
+    echo $port
+}
+
 # Check for Node.js
 if ! command_exists node; then
     echo "❌ Node.js is not installed. Please install Node.js first."
@@ -51,15 +61,22 @@ npx prisma generate
 npx prisma migrate deploy 2>/dev/null || echo -e "${YELLOW}⚠️  No migrations to deploy${NC}"
 cd ..
 
-# Kill any processes running on ports 3000 and 5000
-echo -e "${BLUE}🔍 Checking for processes on ports 3000 and 5000...${NC}"
-lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-lsof -ti:5000 | xargs kill -9 2>/dev/null || true
+# Find available ports
+echo -e "${BLUE}🔍 Finding available ports...${NC}"
+CLIENT_PORT=$(find_available_port 3000)
+SERVER_PORT=$(find_available_port 5000)
+
+echo -e "${GREEN}✓${NC} Client will use port: $CLIENT_PORT"
+echo -e "${GREEN}✓${NC} Server will use port: $SERVER_PORT"
+
+# Kill any processes running on the ports we found (just in case)
+lsof -ti:$CLIENT_PORT | xargs kill -9 2>/dev/null || true
+lsof -ti:$SERVER_PORT | xargs kill -9 2>/dev/null || true
 
 # Start the server in the background
-echo -e "${BLUE}🖥️  Starting backend server on port 5000...${NC}"
+echo -e "${BLUE}🖥️  Starting backend server on port $SERVER_PORT...${NC}"
 cd server
-node index.js &
+PORT=$SERVER_PORT node index.js &
 SERVER_PID=$!
 cd ..
 
@@ -67,8 +84,8 @@ cd ..
 sleep 2
 
 # Start the React app in the background
-echo -e "${BLUE}⚛️  Starting React app on port 3000...${NC}"
-npm start &
+echo -e "${BLUE}⚛️  Starting React app on port $CLIENT_PORT...${NC}"
+PORT=$CLIENT_PORT npm start &
 CLIENT_PID=$!
 
 # Wait for React app to be ready
@@ -77,8 +94,8 @@ sleep 5
 
 echo -e "${GREEN}✅ Application is running!${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "  Frontend: ${GREEN}http://localhost:3000${NC}"
-echo -e "  Backend:  ${GREEN}http://localhost:5000${NC}"
+echo -e "  Frontend: ${GREEN}http://localhost:$CLIENT_PORT${NC}"
+echo -e "  Backend:  ${GREEN}http://localhost:$SERVER_PORT${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 echo "Press Ctrl+C to stop all services"
@@ -89,8 +106,8 @@ cleanup() {
     echo -e "${YELLOW}🛑 Shutting down services...${NC}"
     kill $SERVER_PID 2>/dev/null || true
     kill $CLIENT_PID 2>/dev/null || true
-    lsof -ti:3000 | xargs kill -9 2>/dev/null || true
-    lsof -ti:5000 | xargs kill -9 2>/dev/null || true
+    lsof -ti:$CLIENT_PORT | xargs kill -9 2>/dev/null || true
+    lsof -ti:$SERVER_PORT | xargs kill -9 2>/dev/null || true
     echo -e "${GREEN}✅ Services stopped${NC}"
     exit 0
 }

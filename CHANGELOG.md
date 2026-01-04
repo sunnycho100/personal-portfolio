@@ -5,6 +5,16 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-01-04
+
+### Added
+- Books API (`/api/books`) - add books by title/author, auto-fetches cover from Google Books
+- Dynamic port detection in `start.sh` - auto-finds available ports if 3000/5000 are busy
+- Add Book form in frontend for testing
+
+### Changed
+- Updated CORS to support dynamic ports (3001, 3002)
+
 ## [1.3.0] - 2026-01-03
 
 ### Added

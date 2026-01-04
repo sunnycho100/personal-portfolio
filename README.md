@@ -2,6 +2,22 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Quick Start
+
+```bash
+./start.sh  # Auto-detects available ports
+```
+
+## Books API
+
+Add books by title and author - covers are fetched automatically from Google Books:
+
+```bash
+curl -X POST http://localhost:5001/api/books \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Meditations", "author": "Marcus Aurelius"}'
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
