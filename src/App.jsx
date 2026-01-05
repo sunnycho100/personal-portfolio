@@ -10,6 +10,7 @@ import Activities from './components/Activities.jsx';
 import Github from './components/Github.jsx';   // new
 import More from './components/More.jsx';
 import Contact from './components/Contact.jsx';
+import DeveloperMode from './components/DeveloperMode.jsx';
 
 export default function App() {
   const [reloadComments, setReloadComments] = useState(0);
@@ -44,6 +45,7 @@ export default function App() {
         <More reloadComments={reloadComments} />
         <Contact onCommentAdded={() => setReloadComments(prev => prev + 1)} />
       </div>
+      <DeveloperMode />
     </>
   );
 }

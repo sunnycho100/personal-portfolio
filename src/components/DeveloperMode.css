@@ -1,0 +1,145 @@
+/* Developer Mode Button - Bottom Right */
+.dev-mode-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.dev-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #666;
+  background: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.dev-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dev-btn.active {
+  background: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Password Modal */
+.dev-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.dev-modal {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.dev-modal h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.dev-password-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.dev-password-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.dev-error {
+  color: #f44336;
+  font-size: 14px;
+  margin: 5px 0 10px 0;
+}
+
+.dev-modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.dev-submit-btn,
+.dev-cancel-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dev-submit-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.dev-submit-btn:hover {
+  background: #45a049;
+}
+
+.dev-cancel-btn {
+  background: #f44336;
+  color: white;
+}
+
+.dev-cancel-btn:hover {
+  background: #da190b;
+}
+
+/* Developer Mode Indicator */
+.dev-mode-indicator {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 9998;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

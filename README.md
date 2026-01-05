@@ -18,6 +18,22 @@ curl -X POST http://localhost:5001/api/books \
   -d '{"title": "Meditations", "author": "Marcus Aurelius"}'
 ```
 
+## Developer Mode
+
+A password-protected developer mode is available for site administrators:
+
+1. Click the 🔧 button in the bottom right corner
+2. Enter the password (stored in `.env` as `REACT_APP_DEV_PASSWORD`)
+3. Developer mode activates with visual indicators
+4. Click the button again to exit developer mode
+
+**Setup:** Create a `.env` file in the root directory with:
+```env
+REACT_APP_DEV_PASSWORD=your_password_here
+```
+
+The `.env` file is excluded from version control for security.
+
 ## Available Scripts
 
 In the project directory, you can run:
