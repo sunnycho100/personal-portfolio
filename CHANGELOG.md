@@ -14,10 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Visual indicators for active developer mode
 - Modal interface for password entry
 - Foundation for future developer-specific functionality
+- Book addition form now requires developer mode access
+- Double protection on book API endpoints (UI + function-level validation)
 
 ### Security
 - Password stored securely in `.env` file
 - `.env` file excluded from version control via `.gitignore`
+- Add Book form hidden until developer mode is activated
+- All book addition functions validate developer mode status
 
 ## [1.4.2] - 2026-01-04
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './DeveloperMode.css';
 
-export default function DeveloperMode() {
+export default function DeveloperMode({ onDevModeChange }) {
   const [isDevMode, setIsDevMode] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -25,6 +25,7 @@ export default function DeveloperMode() {
     
     if (password === correctPassword) {
       setIsDevMode(true);
+      onDevModeChange?.(true);
       setShowPasswordModal(false);
       setPassword('');
       setError('');
@@ -36,6 +37,7 @@ export default function DeveloperMode() {
 
   const handleExitDevMode = () => {
     setIsDevMode(false);
+    onDevModeChange?.(false);
   };
 
   return (

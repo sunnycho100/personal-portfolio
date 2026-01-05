@@ -150,7 +150,7 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
   );
 }
 
-export default function More({ reloadComments }) {
+export default function More({ reloadComments, isDevMode }) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newBookTitle, setNewBookTitle] = useState('');
@@ -205,6 +205,10 @@ export default function More({ reloadComments }) {
   // Search for book covers
   const searchCovers = async (e) => {
     e.preventDefault();
+    if (!isDevMode) {
+      alert('Developer mode required to add books');
+      return;
+    }
     if (!newBookTitle.trim()) return;
 
     setSearchingCovers(true);
@@ -232,6 +236,12 @@ export default function More({ reloadComments }) {
 
   // Add book with selected cover
   const addBookWithCover = async (selectedCoverUrl) => {
+    if (!isDevMode) {
+      alert('Developer mode required to add books');
+      setShowCoverModal(false);
+      setCoverOptions([]);
+      return;
+    }
     setShowCoverModal(false);
     setAddingBook(true);
     
@@ -278,6 +288,10 @@ export default function More({ reloadComments }) {
 
   const addNewBook = async (e) => {
     e.preventDefault();
+    if (!isDevMode) {
+      alert('Developer mode required to add books');
+      return;
+    }
     if (!newBookTitle.trim()) return;
 
     setAddingBook(true);
@@ -339,7 +353,8 @@ export default function More({ reloadComments }) {
             <div className="about-block">
               <h3>Books I Love</h3>
               
-              {/* Add New Book Form */}
+              {/* Add New Book Form - Only visible in Developer Mode */}
+              {isDevMode && (
               <div className="add-book-form" style={{ marginBottom: '20px', padding: '15px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e9ecef' }}>
                 <h4 style={{ margin: '0 0 12px 0', color: '#495057', fontSize: '16px' }}>Add a New Book</h4>
                 <form onSubmit={searchCovers} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -404,6 +419,7 @@ export default function More({ reloadComments }) {
                   </div>
                 </form>
               </div>
+              )}
 
               {/* Cover Selection Modal */}
               {showCoverModal && (

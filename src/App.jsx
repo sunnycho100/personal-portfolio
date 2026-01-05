@@ -15,6 +15,7 @@ import DeveloperMode from './components/DeveloperMode.jsx';
 export default function App() {
   const [reloadComments, setReloadComments] = useState(0);
   const [githubData, setGithubData] = useState(null);
+  const [isDevMode, setIsDevMode] = useState(false);
 
   // Fetch GitHub data once at app level
   useEffect(() => {
@@ -42,10 +43,10 @@ export default function App() {
         <Skills githubData={githubData} />
         <Activities />
         <Github githubData={githubData} />   {/* new tab section between Activities and More */}
-        <More reloadComments={reloadComments} />
+        <More reloadComments={reloadComments} isDevMode={isDevMode} />
         <Contact onCommentAdded={() => setReloadComments(prev => prev + 1)} />
       </div>
-      <DeveloperMode />
+      <DeveloperMode onDevModeChange={setIsDevMode} />
     </>
   );
 }
