@@ -19,7 +19,7 @@ export default function App() {
 
   // Fetch GitHub data once at app level
   useEffect(() => {
-    fetch("http://localhost:4000/api/github/overview")
+    fetch("http://localhost:5001/api/github/overview")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load GitHub data");
         return res.json();

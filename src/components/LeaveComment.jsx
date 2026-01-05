@@ -1,7 +1,7 @@
 // src/components/LeaveComment.jsx
 import { useEffect, useState } from "react";
 
-const API_BASE = import.meta?.env?.VITE_API_URL || "http://localhost:4000";
+const API_BASE = import.meta?.env?.VITE_API_URL || "http://localhost:5001";
 
 export default function LeaveComment({ onCommentAdded }) {
   const [open, setOpen] = useState(false);
