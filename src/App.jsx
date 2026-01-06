@@ -14,12 +14,15 @@ import DeveloperMode from './components/DeveloperMode.jsx';
 
 export default function App() {
   const [reloadComments, setReloadComments] = useState(0);
+  const [reloadBooks, setReloadBooks] = useState(0);
   const [githubData, setGithubData] = useState(null);
   const [isDevMode, setIsDevMode] = useState(false);
+  const [books, setBooks] = useState([]);
 
   // Fetch GitHub data once at app level
   useEffect(() => {
-    fetch("http://localhost:5001/api/github/overview")
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+    fetch(`${API_URL}/api/github/overview`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load GitHub data");
         return res.json();
@@ -43,10 +46,19 @@ export default function App() {
         <Skills githubData={githubData} />
         <Activities />
         <Github githubData={githubData} />   {/* new tab section between Activities and More */}
-        <More reloadComments={reloadComments} isDevMode={isDevMode} />
+        <More 
+          reloadComments={reloadComments} 
+          isDevMode={isDevMode} 
+          reloadBooks={reloadBooks}
+          onBooksLoaded={setBooks}
+        />
         <Contact onCommentAdded={() => setReloadComments(prev => prev + 1)} />
       </div>
-      <DeveloperMode onDevModeChange={setIsDevMode} />
+      <DeveloperMode 
+        onDevModeChange={setIsDevMode} 
+        books={books}
+        onBookUpdate={() => setReloadBooks(prev => prev + 1)}
+      />
     </>
   );
 }

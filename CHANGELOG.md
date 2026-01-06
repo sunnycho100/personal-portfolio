@@ -5,6 +5,25 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-01-06
+
+### Added
+- Book manager UI in Developer Mode (📚 button)
+- Edit book covers directly from UI - updates database in real-time
+- Delete books from database via UI
+- PUT `/api/books/:id` endpoint for updating book covers and details
+- Live preview when editing book covers
+- Books state lifted to App level for better management
+
+### Changed
+- Default backend port changed from 5000 to 4000 in `start.sh`
+- All API calls now use environment variable `REACT_APP_API_URL` (defaults to localhost:4000)
+- `start.sh` now auto-opens browser, suppresses verbose logs, quieter output
+- Developer Mode button group with book manager access
+
+### Fixed
+- Consistent API URL usage across all components
+
 ## [1.5.0] - 2026-01-05
 
 ### Added

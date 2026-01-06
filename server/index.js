@@ -311,6 +311,45 @@ app.post("/api/books", async (req, res) => {
   }
 });
 
+// update a book (including cover)
+app.put("/api/books/:id", async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid book ID" });
+    }
+
+    const parsed = BookInput.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+    }
+
+    const { title, author, review } = parsed.data;
+    const imagePath = req.body.imagePath; // Allow updating cover URL
+
+    const updateData = {
+      title,
+      author: author && author.length ? author : null,
+      review: review && review.length ? review : null,
+    };
+
+    // Only update imagePath if provided
+    if (imagePath) {
+      updateData.imagePath = imagePath;
+    }
+
+    const updated = await prisma.book.update({
+      where: { id },
+      data: updateData,
+    });
+
+    res.json(updated);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to update book" });
+  }
+});
+
 // delete a book
 app.delete("/api/books/:id", async (req, res) => {
   try {

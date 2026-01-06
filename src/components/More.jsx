@@ -150,7 +150,7 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
   );
 }
 
-export default function More({ reloadComments, isDevMode }) {
+export default function More({ reloadComments, isDevMode, reloadBooks = 0, onBooksLoaded }) {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newBookTitle, setNewBookTitle] = useState('');
@@ -174,7 +174,8 @@ export default function More({ reloadComments, isDevMode }) {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/books');
+        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+        const response = await fetch(`${API_URL}/api/books`);
         if (response.ok) {
           const apiBooks = await response.json();
           // Transform API books to match expected format
@@ -186,21 +187,32 @@ export default function More({ reloadComments, isDevMode }) {
             review: book.review || ''
           }));
           // Combine API books with fallback books (API books first)
-          setBooks([...transformedBooks, ...fallbackBooks]);
+          const allBooks = [...transformedBooks, ...fallbackBooks];
+          setBooks(allBooks);
+          // Notify parent component
+          if (onBooksLoaded) {
+            onBooksLoaded(allBooks);
+          }
         } else {
           // Fallback to static books if API fails
           setBooks(fallbackBooks);
+          if (onBooksLoaded) {
+            onBooksLoaded(fallbackBooks);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch books:', error);
         setBooks(fallbackBooks);
+        if (onBooksLoaded) {
+          onBooksLoaded(fallbackBooks);
+        }
       } finally {
         setLoading(false);
       }
     };
     
     fetchBooks();
-  }, [fallbackBooks]);
+  }, [fallbackBooks, reloadBooks, onBooksLoaded]);
 
   // Search for book covers
   const searchCovers = async (e) => {
@@ -213,12 +225,13 @@ export default function More({ reloadComments, isDevMode }) {
 
     setSearchingCovers(true);
     try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
       const params = new URLSearchParams({ title: newBookTitle.trim() });
       if (newBookAuthor.trim()) {
         params.append('author', newBookAuthor.trim());
       }
       
-      const response = await fetch(`http://localhost:5001/api/books/search?${params}`);
+      const response = await fetch(`${API_URL}/api/books/search?${params}`);
       if (response.ok) {
         const covers = await response.json();
         setCoverOptions(covers);
@@ -246,7 +259,8 @@ export default function More({ reloadComments, isDevMode }) {
     setAddingBook(true);
     
     try {
-      const response = await fetch('http://localhost:5001/api/books', {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_URL}/api/books`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -296,7 +310,8 @@ export default function More({ reloadComments, isDevMode }) {
 
     setAddingBook(true);
     try {
-      const response = await fetch('http://localhost:5001/api/books', {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_URL}/api/books`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
