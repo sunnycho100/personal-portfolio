@@ -31,3 +31,17 @@ model Book {
   @@index([title])
   @@index([createdAt])
 }
+model BookArchive {
+  id            Int      @id @default(autoincrement())
+  title         String   @db.VarChar(200)
+  author        String?  @db.VarChar(150)
+  imagePath     String   @db.VarChar(300)  // First cover image used
+  firstAddedAt  DateTime @default(now())
+  lastSeenAt    DateTime @updatedAt
+  timesAdded    Int      @default(1)       // Track how many times added
+  isDeleted     Boolean  @default(false)   // Track if currently deleted from main shelf
+
+  @@unique([title, author])  // Prevent duplicates based on title + author
+  @@index([title])
+  @@index([firstAddedAt])
+}

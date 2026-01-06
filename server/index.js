@@ -303,6 +303,31 @@ app.post("/api/books", async (req, res) => {
         review: review && review.length ? review : null,
       },
     });
+
+    // Add to archive (or update if already exists)
+    const normalizedAuthor = author && author.length ? author : null;
+    try {
+      await prisma.bookArchive.upsert({
+        where: {
+          title_author: {
+            title: title,
+            author: normalizedAuthor,
+          },
+        },
+        update: {
+          lastSeenAt: new Date(),
+          timesAdded: { increment: 1 },
+          isDeleted: false,
+        },
+        create: {
+          title: title,
+          author: normalizedAuthor,
+          imagePath: imagePath,
+        },
+      });
+    } catch (archiveError) {
+      console.error('Archive update failed (non-critical):', archiveError.message);
+    }
     
     res.status(201).json(created);
   } catch (e) {
@@ -358,6 +383,30 @@ app.delete("/api/books/:id", async (req, res) => {
       return res.status(400).json({ error: "Invalid book ID" });
     }
 
+    // Get book details before deleting
+    const book = await prisma.book.findUnique({
+      where: { id }
+    });
+
+    if (book) {
+      // Mark as deleted in archive
+      const normalizedAuthor = book.author || null;
+      try {
+        await prisma.bookArchive.updateMany({
+          where: {
+            title: book.title,
+            author: normalizedAuthor,
+          },
+          data: {
+            isDeleted: true,
+          },
+        });
+      } catch (archiveError) {
+        console.error('Archive update failed (non-critical):', archiveError.message);
+      }
+    }
+
+    // Delete from main table
     await prisma.book.delete({
       where: { id }
     });
@@ -366,6 +415,19 @@ app.delete("/api/books/:id", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Failed to delete book" });
+  }
+});
+
+// get book archive (all books ever added)
+app.get("/api/books/archive/all", async (req, res) => {
+  try {
+    const archive = await prisma.bookArchive.findMany({
+      orderBy: { firstAddedAt: "desc" },
+    });
+    res.json(archive);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to fetch book archive" });
   }
 });
 
