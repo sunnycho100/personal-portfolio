@@ -22,7 +22,6 @@ command_exists() {
 find_available_port() {
     local port=$1
     while lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; do
-        echo "⚠️  Port $port is in use, trying port $((port + 1))..."
         port=$((port + 1))
     done
     echo $port
@@ -39,35 +38,40 @@ echo -e "${GREEN}✓${NC} Node.js found: $(node --version)"
 # Install client dependencies if needed
 if [ ! -d "node_modules" ]; then
     echo -e "${BLUE}📦 Installing client dependencies...${NC}"
-    npm install
+    npm install --silent
 else
-    echo -e "${GREEN}✓${NC} Client dependencies already installed"
+    echo -e "${GREEN}✓${NC} Client dependencies installed"
 fi
 
 # Install server dependencies if needed
 if [ ! -d "server/node_modules" ]; then
     echo -e "${BLUE}📦 Installing server dependencies...${NC}"
     cd server
-    npm install
+    npm install --silent
     cd ..
 else
-    echo -e "${GREEN}✓${NC} Server dependencies already installed"
+    echo -e "${GREEN}✓${NC} Server dependencies installed"
 fi
 
 # Setup Prisma database
 echo -e "${BLUE}🗄️  Setting up database with Prisma...${NC}"
 cd server
-npx prisma generate
-npx prisma migrate deploy 2>/dev/null || echo -e "${YELLOW}⚠️  No migrations to deploy${NC}"
+npx prisma generate --quiet 2>/dev/null || npx prisma generate
+npx prisma migrate deploy 2>/dev/null || true
 cd ..
 
 # Find available ports
 echo -e "${BLUE}🔍 Finding available ports...${NC}"
 CLIENT_PORT=$(find_available_port 3000)
-SERVER_PORT=$(find_available_port 5000)
+SERVER_PORT=$(find_available_port 4000)
 
-echo -e "${GREEN}✓${NC} Client will use port: $CLIENT_PORT"
-echo -e "${GREEN}✓${NC} Server will use port: $SERVER_PORT"
+# Only show a message if we had to change from default ports
+if [ "$CLIENT_PORT" != "3000" ] || [ "$SERVER_PORT" != "4000" ]; then
+    echo -e "${YELLOW}⚠️  Default ports in use, using alternatives${NC}"
+fi
+
+echo -e "${GREEN}✓${NC} Client port: $CLIENT_PORT"
+echo -e "${GREEN}✓${NC} Server port: $SERVER_PORT"
 
 # Kill any processes running on the ports we found (just in case)
 lsof -ti:$CLIENT_PORT | xargs kill -9 2>/dev/null || true
@@ -76,7 +80,7 @@ lsof -ti:$SERVER_PORT | xargs kill -9 2>/dev/null || true
 # Start the server in the background
 echo -e "${BLUE}🖥️  Starting backend server on port $SERVER_PORT...${NC}"
 cd server
-PORT=$SERVER_PORT node index.js &
+PORT=$SERVER_PORT node index.js > /dev/null 2>&1 &
 SERVER_PID=$!
 cd ..
 
@@ -85,7 +89,7 @@ sleep 2
 
 # Start the React app in the background
 echo -e "${BLUE}⚛️  Starting React app on port $CLIENT_PORT...${NC}"
-PORT=$CLIENT_PORT npm start &
+BROWSER=none PORT=$CLIENT_PORT npm start > /dev/null 2>&1 &
 CLIENT_PID=$!
 
 # Wait for React app to be ready
@@ -93,6 +97,9 @@ echo -e "${YELLOW}⏳ Waiting for application to start...${NC}"
 sleep 5
 
 echo -e "${GREEN}✅ Application is running!${NC}"
+
+# Open the application in the default browser
+open "http://localhost:$CLIENT_PORT"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "  Frontend: ${GREEN}http://localhost:$CLIENT_PORT${NC}"
 echo -e "  Backend:  ${GREEN}http://localhost:$SERVER_PORT${NC}"
