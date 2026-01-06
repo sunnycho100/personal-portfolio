@@ -5,6 +5,8 @@ export default function DeveloperMode({ onDevModeChange, books = [], onBookUpdat
   const [isDevMode, setIsDevMode] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showBookManager, setShowBookManager] = useState(false);
+  const [showArchive, setShowArchive] = useState(false);
+  const [archiveBooks, setArchiveBooks] = useState([]);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [editingBook, setEditingBook] = useState(null);
@@ -42,6 +44,24 @@ export default function DeveloperMode({ onDevModeChange, books = [], onBookUpdat
     setIsDevMode(false);
     onDevModeChange?.(false);
     setShowBookManager(false);
+    setShowArchive(false);
+  };
+
+  const handleViewArchive = async () => {
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_URL}/api/books/archive/all`);
+      if (response.ok) {
+        const data = await response.json();
+        setArchiveBooks(data);
+        setShowArchive(true);
+      } else {
+        alert('Failed to load archive');
+      }
+    } catch (err) {
+      console.error('Error loading archive:', err);
+      alert('Error loading archive');
+    }
   };
 
   const handleEditBook = (book) => {
@@ -118,6 +138,9 @@ export default function DeveloperMode({ onDevModeChange, books = [], onBookUpdat
           <div className="dev-btn-group">
             <button onClick={() => setShowBookManager(!showBookManager)} className="dev-btn" title="Manage Books">
               📚
+            </button>
+            <button onClick={handleViewArchive} className="dev-btn" title="View Book Archive">
+              📜
             </button>
             <button onClick={handleExitDevMode} className="dev-btn active" title="Exit Developer Mode">
               ✓ DEV
@@ -228,6 +251,49 @@ export default function DeveloperMode({ onDevModeChange, books = [], onBookUpdat
               <button onClick={() => setEditingBook(null)} className="dev-cancel-btn">
                 Cancel
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Book Archive Modal */}
+      {showArchive && (
+        <div className="dev-modal-overlay" onClick={() => setShowArchive(false)}>
+          <div className="dev-book-manager" onClick={(e) => e.stopPropagation()}>
+            <div className="dev-manager-header">
+              <h3>📜 Book Archive ({archiveBooks.length} books)</h3>
+              <button onClick={() => setShowArchive(false)} className="dev-close-btn">✕</button>
+            </div>
+            
+            <div className="dev-archive-info">
+              <p>📖 Complete history of all books ever added to your shelf</p>
+            </div>
+
+            <div className="dev-book-list">
+              {archiveBooks.length === 0 ? (
+                <p className="dev-empty">No books in archive yet.</p>
+              ) : (
+                archiveBooks.map((book) => (
+                  <div key={book.id} className={`dev-book-item ${book.isDeleted ? 'deleted' : ''}`}>
+                    <img src={book.imagePath} alt={book.title} className="dev-book-thumb" />
+                    <div className="dev-book-info">
+                      <h4>{book.title}</h4>
+                      <p className="dev-book-author">{book.author || 'Unknown Author'}</p>
+                      <p className="dev-book-meta">
+                        Added: {new Date(book.firstAddedAt).toLocaleDateString()} 
+                        {book.timesAdded > 1 && ` • Re-added ${book.timesAdded - 1}x`}
+                      </p>
+                    </div>
+                    <div className="dev-book-status">
+                      {book.isDeleted ? (
+                        <span className="status-badge deleted">Deleted</span>
+                      ) : (
+                        <span className="status-badge active">Active</span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

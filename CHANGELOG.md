@@ -5,6 +5,28 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-01-06
+
+### Added
+- **BookArchive database table** - permanent record of all books ever added
+- Automatic archiving when books are added (tracks duplicates, timestamps)
+- Archive viewer in Developer Mode (📜 button) showing complete book history
+- Duplicate detection - prevents re-adding same book to archive
+- Track metadata: first added date, times re-added, deletion status
+- GET `/api/books/archive/all` endpoint to view archive
+- Status badges (Active/Deleted) for books in archive view
+
+### Changed
+- Book deletion now marks books as deleted in archive instead of losing history
+- Archive displays grayscale thumbnails for deleted books
+
+## [1.6.1] - 2026-01-06
+
+### Added
+- Quick delete button (✕) on book carousel items - appears on hover in top-left corner
+- Delete button only visible in Developer Mode for safety
+- Instant book removal from carousel and database
+
 ## [1.6.0] - 2026-01-06
 
 ### Added
