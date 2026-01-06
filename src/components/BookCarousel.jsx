@@ -231,13 +231,36 @@ function BookModal({ book, onClose }) {
   return createPortal(modal, document.body);
 }
 
-export default function BookCarousel({ books = [] }) {
+export default function BookCarousel({ books = [], isDevMode = false, onBookDelete }) {
   const trackRef = useRef(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
   const [selected, setSelected] = useState(null);
   const [booksWithCovers, setBooksWithCovers] = useState(books);
   const [loadingCovers, setLoadingCovers] = useState(false);
+
+  const handleDeleteBook = async (e, book) => {
+    e.stopPropagation(); // Prevent opening the modal
+    if (!window.confirm(`Delete "${book.title}"?`)) return;
+
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_URL}/api/books/${book.id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        if (onBookDelete) {
+          onBookDelete(book.id);
+        }
+      } else {
+        alert('Failed to delete book');
+      }
+    } catch (err) {
+      console.error('Error deleting book:', err);
+      alert('Error deleting book');
+    }
+  };
 
   // Load book covers from APIs
   useEffect(() => {
@@ -321,7 +344,7 @@ export default function BookCarousel({ books = [] }) {
             {booksWithCovers.map((b, i) => (
               <div
                 key={b.id || i}
-                className={`carousel-item ${loadingCovers ? 'loading' : ''}`}
+                className={`carousel-item ${loadingCovers ? 'loading' : ''} ${isDevMode ? 'dev-mode' : ''}`}
                 onClick={() => setSelected({ index: i })}
               >
                 <img 
@@ -333,6 +356,15 @@ export default function BookCarousel({ books = [] }) {
                     e.target.src = books[i]?.src || '/books/default-book-cover.jpg';
                   }}
                 />
+                {isDevMode && b.id && (
+                  <button
+                    className="carousel-delete-btn"
+                    onClick={(e) => handleDeleteBook(e, b)}
+                    title={`Delete ${b.title}`}
+                  >
+                    ✕
+                  </button>
+                )}
                 {b.isApiCover && (
                   <div className="api-badge" title="Cover loaded from API">
                     API

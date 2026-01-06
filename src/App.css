@@ -726,6 +726,42 @@ h2 { margin: 16px 24px; font-size: 18px; }
   animation: spin 1s linear infinite;
 }
 
+/* Delete button for books in developer mode */
+.carousel-delete-btn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-item.dev-mode:hover .carousel-delete-btn {
+  opacity: 1;
+}
+
+.carousel-delete-btn:hover {
+  background: rgba(220, 38, 38, 1);
+  transform: scale(1.1);
+}
+
+.carousel-delete-btn:active {
+  transform: scale(0.95);
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

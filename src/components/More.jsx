@@ -450,7 +450,17 @@ export default function More({ reloadComments, isDevMode, reloadBooks = 0, onBoo
               {loading ? (
                 <p>Loading books...</p>
               ) : (
-                <BookCarousel books={books} />
+                <BookCarousel 
+                  books={books} 
+                  isDevMode={isDevMode}
+                  onBookDelete={(bookId) => {
+                    // Trigger reload after deletion
+                    if (onBooksLoaded) {
+                      setBooks(books.filter(b => b.id !== bookId));
+                      onBooksLoaded(books.filter(b => b.id !== bookId));
+                    }
+                  }}
+                />
               )}
             </div>
 
