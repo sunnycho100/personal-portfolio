@@ -5,15 +5,27 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.8.0] - 2026-01-07
+## [1.8.1] - 2026-01-07
 
 ### Changed
-- **Open Library API Integration** - Replaced Google Books API with Open Library Search API
-  - No API key required, better metadata (publish year, ISBN, Open Library ID)
-  - Covers fetched via Open Library Covers API using Cover ID for reliability
-  - Added User-Agent header per Open Library guidelines
+- **Dual API Integration for Book Covers** - Now uses both Open Library and Google Books APIs
+  - Cover search displays results grouped by source (Open Library / Google Books)
+  - Open Library section highlighted with green badges for high-quality covers
+  - Google Books section with blue badges for additional options
+  - Users can choose from up to 6+ cover options from both sources
+  - Fallback mechanism: Open Library → Google Books → Default cover
 - Book titles and authors now display in title case format (e.g., "atomic habits" → "Atomic Habits")
 - `toTitleCase()` utility function added for consistent formatting across book displays
+- `getBookCoverOptions()` function added to fetch covers from both APIs in parallel
+
+### Added
+- Source badges in cover selection modal to distinguish between API providers
+- Enhanced hover effects with color-coded borders (green for Open Library, blue for Google Books)
+
+## [1.8.0] - 2026-01-07
+
+### Internal
+- Initial dual API implementation
 
 ## [1.7.0] - 2026-01-06
 

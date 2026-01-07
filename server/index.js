@@ -218,7 +218,8 @@ app.get("/api/books/search", async (req, res) => {
     const openLibCover = await getOpenLibraryCover(title, author);
     if (openLibCover) {
       results.push({
-        id: 'openlibrary',
+        id: 'openlibrary-1',
+        source: 'Open Library',
         title: title,
         author: author || '',
         coverUrl: openLibCover,
@@ -242,6 +243,7 @@ app.get("/api/books/search", async (req, res) => {
           if (cover) {
             results.push({
               id: item.id,
+              source: 'Google Books',
               title: item.volumeInfo.title || title,
               author: item.volumeInfo.authors ? item.volumeInfo.authors.join(', ') : author || '',
               coverUrl: enhanceImageQuality(cover), // Enhanced quality

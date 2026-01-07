@@ -13,6 +13,10 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // Group covers by source
+  const openLibraryCovers = covers.filter(c => c.source === 'Open Library');
+  const googleBooksCovers = covers.filter(c => c.source === 'Google Books');
+
   const modalStyles = {
     overlay: {
       position: 'fixed',
@@ -28,7 +32,7 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
       background: 'white',
       borderRadius: '12px',
       padding: '24px',
-      maxWidth: '800px',
+      maxWidth: '900px',
       maxHeight: '90vh',
       overflow: 'auto',
       position: 'relative'
@@ -46,6 +50,28 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
       margin: 0,
       color: '#6c757d',
       fontSize: '14px'
+    },
+    sectionHeader: {
+      marginTop: '24px',
+      marginBottom: '12px',
+      paddingBottom: '8px',
+      borderBottom: '2px solid #e9ecef',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px'
+    },
+    badge: {
+      padding: '4px 12px',
+      borderRadius: '4px',
+      fontSize: '12px',
+      fontWeight: 'bold',
+      color: 'white'
+    },
+    openLibraryBadge: {
+      background: '#28a745'
+    },
+    googleBooksBadge: {
+      background: '#007bff'
     },
     closeBtn: {
       position: 'absolute',
@@ -103,7 +129,7 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
         <button style={modalStyles.closeBtn} onClick={onClose}>×</button>
         <div style={modalStyles.header}>
           <h3 style={modalStyles.title}>Choose a Cover</h3>
-          <p style={modalStyles.subtitle}>Select one of the covers below for "{title}"</p>
+          <p style={modalStyles.subtitle}>Select from {covers.length} cover{covers.length > 1 ? 's' : ''} for "{title}"</p>
         </div>
         
         {covers.length === 0 ? (
@@ -117,32 +143,88 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
             </button>
           </div>
         ) : (
-          <div style={modalStyles.grid}>
-            {covers.map((cover, index) => (
-              <div
-                key={cover.id || index}
-                style={modalStyles.coverCard}
-                onClick={() => onSelect(cover.coverUrl)}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#007bff';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#e9ecef';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <img 
-                  src={cover.coverUrl} 
-                  alt={cover.title}
-                  style={modalStyles.coverImage}
-                  onError={(e) => { e.target.src = '/books/default-book-cover.jpg'; }}
-                />
-                <div style={modalStyles.coverTitle}>{cover.title}</div>
-                <div style={modalStyles.coverAuthor}>{cover.author}</div>
+          <>
+            {/* Open Library Section */}
+            {openLibraryCovers.length > 0 && (
+              <div>
+                <div style={modalStyles.sectionHeader}>
+                  <span style={{...modalStyles.badge, ...modalStyles.openLibraryBadge}}>OPEN LIBRARY</span>
+                  <span style={{ fontSize: '14px', color: '#495057' }}>High Quality Covers</span>
+                </div>
+                <div style={modalStyles.grid}>
+                  {openLibraryCovers.map((cover, index) => (
+                    <div
+                      key={cover.id || index}
+                      style={modalStyles.coverCard}
+                      onClick={() => onSelect(cover.coverUrl)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#28a745';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(40, 167, 69, 0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#e9ecef';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      <img 
+                        src={cover.coverUrl} 
+                        alt={cover.title}
+                        style={modalStyles.coverImage}
+                        onError={(e) => { e.target.src = '/books/default-book-cover.jpg'; }}
+                      />
+                      <div style={modalStyles.coverTitle}>{cover.title}</div>
+                      <div style={modalStyles.coverAuthor}>{cover.author}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
+            )}
+
+            {/* Google Books Section */}
+            {googleBooksCovers.length > 0 && (
+              <div>
+                <div style={modalStyles.sectionHeader}>
+                  <span style={{...modalStyles.badge, ...modalStyles.googleBooksBadge}}>GOOGLE BOOKS</span>
+                  <span style={{ fontSize: '14px', color: '#495057' }}>Additional Options</span>
+                </div>
+                <div style={modalStyles.grid}>
+                  {googleBooksCovers.map((cover, index) => (
+                    <div
+                      key={cover.id || index}
+                      style={modalStyles.coverCard}
+                      onClick={() => onSelect(cover.coverUrl)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#007bff';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 123, 255, 0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#e9ecef';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      <img 
+                        src={cover.coverUrl} 
+                        alt={cover.title}
+                        style={modalStyles.coverImage}
+                        onError={(e) => { e.target.src = '/books/default-book-cover.jpg'; }}
+                      />
+                      <div style={modalStyles.coverTitle}>{cover.title}</div>
+                      <div style={modalStyles.coverAuthor}>{cover.author}</div>
+                      {cover.publishedDate && (
+                        <div style={{ fontSize: '10px', color: '#adb5bd', marginTop: '4px' }}>
+                          {new Date(cover.publishedDate).getFullYear()}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>,

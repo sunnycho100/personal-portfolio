@@ -59,13 +59,11 @@ export async function getOpenLibraryCover(title, author = '') {
 }
 
 /**
- * Search for book cover using Google Books API (ARCHIVED)
- * NOTE: Keeping as reference. Open Library is now the primary API.
+ * Search for book cover using Google Books API
  * @param {string} title - Book title
  * @param {string} author - Book author (optional)
  * @returns {Promise<string|null>} Cover URL or null
  */
-/*
 export async function getGoogleBooksCover(title, author = '') {
   try {
     const query = author ? `${title}+inauthor:${author}` : title;
@@ -91,32 +89,52 @@ export async function getGoogleBooksCover(title, author = '') {
     return null;
   }
 }
-*/
 
 /**
  * Get book cover from multiple sources with fallback
- * Uses Open Library API primarily (https://openlibrary.org/dev/docs/api/search)
- * Open Library provides: title, author_name, first_publish_year, cover_i, isbn, etc.
+ * Fetches from both Open Library and Google Books APIs
  * @param {string} title - Book title
  * @param {string} author - Book author (optional)
  * @param {string} fallbackSrc - Local fallback image path
- * @returns {Promise<string>} Cover URL
+ * @returns {Promise<string>} Cover URL (first available)
  */
 export async function getBookCover(title, author = '', fallbackSrc = null) {
-  // Try Open Library first (faster, no API key needed, no rate limiting)
+  // Try Open Library first (faster, no API key needed)
   const { coverUrl, bookData } = await getOpenLibraryCover(title, author);
   
   if (coverUrl) {
     return coverUrl;
   }
   
-  // Fallback to Google Books if Open Library doesn't have cover
-  // NOTE: Previous API used - keeping as reference:
-  // const coverUrl = await getGoogleBooksCover(title, author);
-  // if (coverUrl) return coverUrl;
+  // Fallback to Google Books
+  const googleCover = await getGoogleBooksCover(title, author);
+  if (googleCover) {
+    return googleCover;
+  }
   
   // Final fallback to local image
   return fallbackSrc || '/books/default-book-cover.jpg';
+}
+
+/**
+ * Get book covers from both APIs for user selection
+ * @param {string} title - Book title
+ * @param {string} author - Book author (optional)
+ * @param {string} fallbackSrc - Local fallback image path
+ * @returns {Promise<{openLibrary: string|null, googleBooks: string|null, fallback: string}>}
+ */
+export async function getBookCoverOptions(title, author = '', fallbackSrc = null) {
+  // Fetch from both APIs in parallel
+  const [openLibraryResult, googleBooksResult] = await Promise.all([
+    getOpenLibraryCover(title, author),
+    getGoogleBooksCover(title, author)
+  ]);
+  
+  return {
+    openLibrary: openLibraryResult.coverUrl,
+    googleBooks: googleBooksResult,
+    fallback: fallbackSrc || '/books/default-book-cover.jpg'
+  };
 }
 
 /**
