@@ -6,6 +6,15 @@ function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
 }
 
+function toTitleCase(str) {
+  if (!str) return str;
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 function BookModal({ book, onClose }) {
   const id = book.id || book.src;
   const notesKey = `book_quickdesc_${id}`;
@@ -138,7 +147,7 @@ function BookModal({ book, onClose }) {
       >
         <div className="modal-header" onPointerDown={onPointerDown}>
           <div className="modal-header-content">
-            <h2 className="modal-title">{book.title}</h2>
+            <h2 className="modal-title">{toTitleCase(book.title)}</h2>
             <p className="modal-subtitle">Book Details</p>
           </div>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close">
@@ -158,8 +167,8 @@ function BookModal({ book, onClose }) {
 
           <div className="modal-right">
             <div className="book-info">
-              <h3 className="book-title">{book.title}</h3>
-              {book.author && <p className="book-author">{book.author}</p>}
+              <h3 className="book-title">{toTitleCase(book.title)}</h3>
+              {book.author && <p className="book-author">{toTitleCase(book.author)}</p>}
               {book.review && <div className="book-review">{book.review}</div>}
             </div>
 
@@ -241,7 +250,7 @@ export default function BookCarousel({ books = [], isDevMode = false, onBookDele
 
   const handleDeleteBook = async (e, book) => {
     e.stopPropagation(); // Prevent opening the modal
-    if (!window.confirm(`Delete "${book.title}"?`)) return;
+    if (!window.confirm(`Delete "${toTitleCase(book.title)}"?`)) return;
 
     try {
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
@@ -360,7 +369,7 @@ export default function BookCarousel({ books = [], isDevMode = false, onBookDele
                   <button
                     className="carousel-delete-btn"
                     onClick={(e) => handleDeleteBook(e, b)}
-                    title={`Delete ${b.title}`}
+                    title={`Delete ${toTitleCase(b.title)}`}
                   >
                     ✕
                   </button>

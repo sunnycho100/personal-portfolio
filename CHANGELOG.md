@@ -5,6 +5,16 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-01-07
+
+### Changed
+- **Open Library API Integration** - Replaced Google Books API with Open Library Search API
+  - No API key required, better metadata (publish year, ISBN, Open Library ID)
+  - Covers fetched via Open Library Covers API using Cover ID for reliability
+  - Added User-Agent header per Open Library guidelines
+- Book titles and authors now display in title case format (e.g., "atomic habits" → "Atomic Habits")
+- `toTitleCase()` utility function added for consistent formatting across book displays
+
 ## [1.7.0] - 2026-01-06
 
 ### Added

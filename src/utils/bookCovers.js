@@ -1,43 +1,71 @@
 // Book Cover API Utilities
 
 /**
- * Search for book cover using Open Library API
+ * Search for book cover and metadata using Open Library API
+ * API Docs: https://openlibrary.org/dev/docs/api/search
+ * Data returned includes: title, author_name, first_publish_year, cover_i (Cover ID), isbn, key, etc.
  * @param {string} title - Book title
  * @param {string} author - Book author (optional)
- * @returns {Promise<string|null>} Cover URL or null
+ * @returns {Promise<{coverUrl: string|null, bookData: Object|null}>} Cover URL and book metadata
  */
 export async function getOpenLibraryCover(title, author = '') {
   try {
+    // Build search query
     const query = author ? `title:${title} author:${author}` : title;
+    
+    // Fetch from Open Library Search API with specific fields
     const response = await fetch(
-      `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=1`
+      `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=1&fields=title,author_name,first_publish_year,isbn,cover_i,key,author_key`,
+      {
+        headers: {
+          'User-Agent': 'PortfolioApp/1.0 (+https://portfolio.example.com)'
+        }
+      }
     );
     
     const data = await response.json();
     
     if (data.docs && data.docs.length > 0) {
       const book = data.docs[0];
+      let coverUrl = null;
+      
+      // Try to get cover using cover_i (Cover ID) - most reliable
       if (book.cover_i) {
-        return `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+        coverUrl = `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
       }
-      if (book.isbn && book.isbn[0]) {
-        return `https://covers.openlibrary.org/b/isbn/${book.isbn[0]}-L.jpg`;
+      // Fallback to ISBN if available
+      else if (book.isbn && book.isbn[0]) {
+        coverUrl = `https://covers.openlibrary.org/b/isbn/${book.isbn[0]}-L.jpg`;
       }
+      
+      // Return both cover URL and book metadata
+      return {
+        coverUrl,
+        bookData: {
+          title: book.title,
+          author: book.author_name ? book.author_name[0] : author,
+          publishYear: book.first_publish_year,
+          isbn: book.isbn ? book.isbn[0] : null,
+          olid: book.key // Open Library ID
+        }
+      };
     }
     
-    return null;
+    return { coverUrl: null, bookData: null };
   } catch (error) {
     console.error('Error fetching Open Library cover:', error);
-    return null;
+    return { coverUrl: null, bookData: null };
   }
 }
 
 /**
- * Search for book cover using Google Books API
+ * Search for book cover using Google Books API (ARCHIVED)
+ * NOTE: Keeping as reference. Open Library is now the primary API.
  * @param {string} title - Book title
  * @param {string} author - Book author (optional)
  * @returns {Promise<string|null>} Cover URL or null
  */
+/*
 export async function getGoogleBooksCover(title, author = '') {
   try {
     const query = author ? `${title}+inauthor:${author}` : title;
@@ -63,25 +91,32 @@ export async function getGoogleBooksCover(title, author = '') {
     return null;
   }
 }
+*/
 
 /**
  * Get book cover from multiple sources with fallback
+ * Uses Open Library API primarily (https://openlibrary.org/dev/docs/api/search)
+ * Open Library provides: title, author_name, first_publish_year, cover_i, isbn, etc.
  * @param {string} title - Book title
  * @param {string} author - Book author (optional)
  * @param {string} fallbackSrc - Local fallback image path
  * @returns {Promise<string>} Cover URL
  */
 export async function getBookCover(title, author = '', fallbackSrc = null) {
-  // Try Open Library first (faster, no API key needed)
-  let coverUrl = await getOpenLibraryCover(title, author);
+  // Try Open Library first (faster, no API key needed, no rate limiting)
+  const { coverUrl, bookData } = await getOpenLibraryCover(title, author);
   
-  // Fallback to Google Books
-  if (!coverUrl) {
-    coverUrl = await getGoogleBooksCover(title, author);
+  if (coverUrl) {
+    return coverUrl;
   }
   
-  // Return API URL or fallback to local image
-  return coverUrl || fallbackSrc || '/books/default-book-cover.jpg';
+  // Fallback to Google Books if Open Library doesn't have cover
+  // NOTE: Previous API used - keeping as reference:
+  // const coverUrl = await getGoogleBooksCover(title, author);
+  // if (coverUrl) return coverUrl;
+  
+  // Final fallback to local image
+  return fallbackSrc || '/books/default-book-cover.jpg';
 }
 
 /**
