@@ -1,8 +1,20 @@
 import Reveal from './Reveal.jsx';
 
 export default function Skills({ githubData }) {
-  // Static skills that aren't programming languages
-  const staticSkills = ['MATLAB', 'Excel', 'PowerPoint'];
+  // Categorize skills
+  const skillCategories = {
+    'Languages': [
+      'JavaScript', 'Python', 'Java', 'TypeScript', 'C', 'C++', 
+      'SystemVerilog', 'HTML', 'CSS', 'SQL', 'Shell', 'Verilog'
+    ],
+    'Tools & Platforms': [
+      'React', 'Node.js', 'Git', 'Docker', 'AWS', 'Azure', 
+      'VS Code', 'Prisma', 'MySQL', 'PostgreSQL', 'MongoDB'
+    ],
+    'Other': [
+      'MATLAB', 'Excel', 'PowerPoint', 'Figma', 'Photoshop'
+    ]
+  };
 
   // Extract languages from GitHub data
   const getGithubLanguages = () => {
@@ -25,32 +37,32 @@ export default function Skills({ githubData }) {
 
   const githubLanguages = getGithubLanguages();
   
-  // Combine GitHub languages with static skills, removing duplicates
-  const allSkills = [...new Set([...githubLanguages, ...staticSkills])];
+  // Merge GitHub languages with predefined categories
+  const mergedSkills = {
+    'Languages': [...new Set([...githubLanguages, ...skillCategories['Languages']])],
+    'Tools & Platforms': skillCategories['Tools & Platforms'],
+    'Other': skillCategories['Other']
+  };
 
   return (
     <section id="skills" className="section">
       <Reveal delay="260ms" className="list-container">
         <h2>Skills</h2>
-        <ul className="chip-list">
-          {allSkills.length > 0 ? (
-            allSkills.map((skill) => (
-              <li key={skill} className="skill-chip">
-                {skill}
-              </li>
-            ))
-          ) : (
-            // Fallback if no data is available yet
-            <>
-              <li className="skill-chip">SystemVerilog</li>
-              <li className="skill-chip">Java</li>
-              <li className="skill-chip">Python</li>
-              <li className="skill-chip">MATLAB</li>
-              <li className="skill-chip">Excel</li>
-              <li className="skill-chip">PowerPoint</li>
-            </>
-          )}
-        </ul>
+        
+        <div className="skills-categories">
+          {Object.entries(mergedSkills).map(([category, skills]) => (
+            <div key={category} className="skill-category">
+              <h3 className="category-title">{category}</h3>
+              <ul className="chip-list">
+                {skills.map((skill) => (
+                  <li key={skill} className="skill-chip">
+                    {skill}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </Reveal>
     </section>
   );
