@@ -20,7 +20,7 @@ export default function Timeline({ experiences }) {
           className="timeline-line"
         ></div>
         
-        {/* Experience markers */}}
+        {/* Experience markers */}
         {sortedExperiences.map((exp, index) => {
           // Calculate position starting from the top offset
           // The first item starts at the offset, then spreads downward
