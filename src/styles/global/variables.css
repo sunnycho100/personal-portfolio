@@ -1,0 +1,26 @@
+/* CSS Custom Properties (Design Tokens) */
+
+:root {
+  /* Navigation */
+  --nav-height: 72px;
+  --nav-bg: #ffffff;
+  --nav-border: #e6e6e6;
+  --tabbar-bg: #f7f7f8;
+  --tab-text: #222;
+  --tab-hover: #ffffff;
+  --ring: rgba(0, 0, 0, 0.12);
+
+  /* Reveal Animation Tuning */
+  --reveal-distance: 28px;
+  --reveal-duration: 980ms;
+  --reveal-ease: cubic-bezier(.22,1,.36,1);
+  --child-duration: 900ms;
+
+  /* Colors */
+  --accent: #4f46e5;
+  --accent-ink: #1f1b77;
+  --page-grad: linear-gradient(180deg,#fafafa 0%, #f5f7ff 100%);
+  
+  /* Card styling */
+  --card-bg: #f7f7f7;
+}

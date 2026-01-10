@@ -1,0 +1,60 @@
+/* Layout Utilities */
+
+/* Main container */
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0;
+}
+
+/* Elevated cards + round corners */
+.list-container,
+.about-container,
+.header-container,
+.accordion {
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+}
+
+.list-container:hover,
+.about-container:hover {
+  /* Optional hover effects can be uncommented */
+  /* transform: translateY(-2px); */
+  /* transition: transform .18s ease, box-shadow .18s ease; */
+}
+
+/* Generic sections */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 48px;
+  width: 96%;
+  max-width: 1400px;
+  align-self: center;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background-color: transparent;
+}
+
+/* Section spacing + divider (skip hero) */
+.section + .section {
+  margin-top: 56px;
+}
+
+.section:not(#home)::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0,0,0,0), rgba(0,0,0,.06), rgba(0,0,0,0));
+  margin: 36px auto 0;
+  width: 80%;
+  border-radius: 1px;
+}
+
+/* Section centering */
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

@@ -1,0 +1,89 @@
+/* More About Me Accordion Section */
+
+.accordion {
+  width: 96%;
+  max-width: 1400px;
+  align-self: center;
+  margin: 8px auto 20px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  overflow: clip;
+}
+
+.accordion summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+  user-select: none;
+}
+
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion .summary-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.accordion .summary-left i {
+  color: var(--accent);
+}
+
+.accordion .chev {
+  transition: transform .25s ease;
+}
+
+.accordion[open] .chev {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  padding: 4px 20px 18px;
+  border-top: 1px solid #efefef;
+}
+
+.about-block + .about-block {
+  margin-top: 12px;
+}
+
+.about-block h3 {
+  margin: 12px 0 6px 0;
+  font-size: 15px;
+  color: #222;
+}
+
+.bulleted {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.bulleted li {
+  margin: 4px 0;
+}
+
+.chips-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.chips-inline li {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  background: #f2f3ff;
+  color: #2b2b6e;
+  border: 1px solid rgba(79,70,229,.18);
+}

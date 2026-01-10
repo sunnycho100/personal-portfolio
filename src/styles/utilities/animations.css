@@ -1,0 +1,56 @@
+/* Reveal Animations and Transitions */
+
+/* One-time reveal animations */
+.reveal-init {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+  transition:
+    opacity var(--reveal-duration) var(--reveal-ease),
+    transform var(--reveal-duration) var(--reveal-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger > * {
+  opacity: 0;
+  transform: translateY(calc(var(--reveal-distance) + 6px));
+  transition:
+    opacity var(--child-duration) var(--reveal-ease),
+    transform var(--child-duration) var(--reveal-ease);
+  transition-delay: var(--child-delay, 0ms);
+}
+
+.reveal-active .stagger > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.stagger > *:nth-child(1) { --child-delay: calc(var(--reveal-delay, 0ms) + 90ms); }
+.stagger > *:nth-child(2) { --child-delay: calc(var(--reveal-delay, 0ms) + 180ms); }
+.stagger > *:nth-child(3) { --child-delay: calc(var(--reveal-delay, 0ms) + 270ms); }
+.stagger > *:nth-child(4) { --child-delay: calc(var(--reveal-delay, 0ms) + 360ms); }
+.stagger > *:nth-child(5) { --child-delay: calc(var(--reveal-delay, 0ms) + 450ms); }
+.stagger > *:nth-child(6) { --child-delay: calc(var(--reveal-delay, 0ms) + 540ms); }
+.stagger > *:nth-child(7) { --child-delay: calc(var(--reveal-delay, 0ms) + 630ms); }
+.stagger > *:nth-child(8) { --child-delay: calc(var(--reveal-delay, 0ms) + 720ms); }
+
+/* Accessibility: reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-init,
+  .reveal-active,
+  .stagger > * {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Spin animation for loading states */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

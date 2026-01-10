@@ -1,0 +1,68 @@
+/* Contact Section Styles */
+
+.contact-container h2 {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+/* Center the blue underline for Contact heading */
+.contact-container h2::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.social-icons {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  padding: 20px 0 40px;
+}
+
+.social-icons a {
+  color: #333;
+  font-size: 30px;
+  text-decoration: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.social-icons a:hover {
+  color: #0077b5;
+  transform: scale(1.1);
+}
+
+.social-icons a:active {
+  transform: scale(0.95);
+}
+
+/* Resume Button */
+.resume-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f3f3f3;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  margin-top: 12px;
+  transition: all 0.2s ease;
+}
+
+.resume-button i {
+  color: #d32f2f;
+  font-size: 16px;
+}
+
+.resume-button:hover {
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+
+.resume-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}

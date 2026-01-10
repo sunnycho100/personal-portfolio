@@ -1,0 +1,17 @@
+/* CSS Reset and Base Styles */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding-top: var(--nav-height);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: #111;
+  background: var(--page-grad);
+}
+
+* {
+  box-sizing: border-box;
+}

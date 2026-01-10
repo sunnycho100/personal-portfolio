@@ -1,0 +1,28 @@
+/* About Section Styles */
+
+.about-container {
+  width: 96%;
+  max-width: 1400px;
+  align-self: center;
+  margin-top: 48px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+}
+
+#about h2 {
+  margin: 16px 24px 8px;
+  font-size: 18px;
+}
+
+.about-container .about-text {
+  padding: 0 24px 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-container .about-text p {
+  margin: 0 0 14px 0;
+  line-height: 1.6;
+  color: #222;
+}

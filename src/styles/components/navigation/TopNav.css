@@ -1,0 +1,127 @@
+/* Top Navigation Styles */
+
+.topnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  z-index: 1000;
+}
+
+.topnav-inner {
+  max-width: 1100px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: none;
+  color: #111;
+}
+
+/* Tabbar to the right side */
+.tabbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background: var(--nav-bg);
+  border-radius: 12px;
+  padding: 6px 10px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links .tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--tab-text);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.02s;
+  border: 1px solid transparent;
+}
+
+.nav-links .tab:hover {
+  background: var(--tab-hover);
+  border-color: var(--nav-border);
+}
+
+.nav-links .tab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ring);
+  background: var(--tab-hover);
+}
+
+.nav-links .tab:active {
+  transform: translateY(1px);
+}
+
+/* Underline animation + active state */
+.nav-links .tab::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 6px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+  border-radius: 2px;
+}
+
+.nav-links .tab:hover::after {
+  transform: scaleX(1);
+}
+
+.nav-links .tab.is-active {
+  color: var(--accent-ink);
+}
+
+.nav-links .tab.is-active::after {
+  transform: scaleX(1);
+}
+
+/* Responsive: on small screens, stack */
+@media (max-width: 720px) {
+  .topnav-inner {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .tabbar {
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

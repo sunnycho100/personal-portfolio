@@ -1,0 +1,181 @@
+/* Book Carousel Styles */
+
+.book-carousel {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-viewport {
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+
+.carousel-track {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding: 8px 4px;
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  width: 160px;
+  aspect-ratio: 2 / 3;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card-bg, #f7f7f7);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-item.loading {
+  opacity: 0.7;
+}
+
+.carousel-item.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Delete button for books in developer mode */
+.carousel-delete-btn {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-item.dev-mode:hover .carousel-delete-btn {
+  opacity: 1;
+}
+
+.carousel-delete-btn:hover {
+  background: rgba(220, 38, 38, 1);
+  transform: scale(1.1);
+}
+
+.carousel-delete-btn:active {
+  transform: scale(0.95);
+}
+
+.api-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  font-size: 8px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Carousel navigation buttons */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.carousel-btn:hover {
+  transform: translateY(-50%) translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.12),
+    0 4px 8px rgba(0, 0, 0, 0.08);
+  color: #111827;
+  background: rgba(255, 255, 255, 1);
+}
+
+.carousel-btn:active {
+  transform: translateY(-50%) scale(0.98);
+  transition-duration: 0.1s;
+}
+
+.carousel-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  transform: translateY(-50%);
+}
+
+.carousel-btn.prev {
+  left: 12px;
+}
+
+.carousel-btn.next {
+  right: 12px;
+}
+
+@media (max-width: 720px) {
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+  }
+  
+  .carousel-btn.prev {
+    left: 8px;
+  }
+  
+  .carousel-btn.next {
+    right: 8px;
+  }
+}

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.0] - 2026-01-10
 
+## [1.10.0] - 2026-01-10
+
+### Added
+- **CSS Modularization**: Broke the large `App.css` into focused modules under `src/styles/` (global, utilities, components) and added a dark-mode overrides file to improve maintainability and debugging.
+
+### Changed
+- Replaced monolithic stylesheet with an import-based `App.css` aggregator that imports the new modules; adjusted layout widths for wider card presentation (~96%).
+
+
 ### Added
 - **Drag-and-drop Book Cover Upload**: Users (in Developer Mode) can now drag and drop a book cover image, enter the book title and author, and upload directly from the "More About Me" section.
 - Backend `/api/books/upload` endpoint: Accepts image, title, and author, saves the cover as a JPEG with the format `Book-title_Author-name.jpg` in `public/books/`, and creates a Book/BookArchive DB entry.
