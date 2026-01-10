@@ -356,15 +356,19 @@ export default function BookCarousel({ books = [], isDevMode = false, onBookDele
                 className={`carousel-item ${loadingCovers ? 'loading' : ''} ${isDevMode ? 'dev-mode' : ''}`}
                 onClick={() => setSelected({ index: i })}
               >
-                <img 
-                  src={b.src} 
-                  alt={b.title} 
-                  loading="lazy"
-                  onError={(e) => {
-                    // Fallback to local image if API image fails
-                    e.target.src = books[i]?.src || '/books/default-book-cover.jpg';
-                  }}
-                />
+                <div className="book-3d">
+                  <div className="book-face">
+                    <img 
+                      src={b.src} 
+                      alt={b.title} 
+                      loading="lazy"
+                      onError={(e) => {
+                        // Fallback to local image if API image fails
+                        e.target.src = books[i]?.src || '/books/default-book-cover.jpg';
+                      }}
+                    />
+                  </div>
+                </div>
                 {isDevMode && b.id && (
                   <button
                     className="carousel-delete-btn"
@@ -379,6 +383,11 @@ export default function BookCarousel({ books = [], isDevMode = false, onBookDele
                     API
                   </div>
                 )}
+
+                <div className="book-meta">
+                  <div className="book-title-3d">{b.title}</div>
+                  {b.author && <div className="book-author-3d">{b.author}</div>}
+                </div>
               </div>
             ))}
           </div>

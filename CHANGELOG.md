@@ -5,7 +5,13 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.9.0] - 2026-01-10
+## [1.11.0] - 2026-01-10
+
+### Changed
+- Book carousel: 3D tilt effect, page and back rendering, and consistent sizing for all covers.
+- Increased horizontal gap and vertical space for book covers and meta, so long titles/authors never get cut off.
+- Carousel now only scrolls horizontally (vertical scroll disabled), and always expands to fit the lowest author/title.
+- Improved overflow handling so 3D books are never clipped, and carousel always shows full book and meta.
 
 ## [1.10.0] - 2026-01-10
 
@@ -15,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replaced monolithic stylesheet with an import-based `App.css` aggregator that imports the new modules; adjusted layout widths for wider card presentation (~96%).
 
+## [1.9.0] - 2026-01-10
 
 ### Added
 - **Drag-and-drop Book Cover Upload**: Users (in Developer Mode) can now drag and drop a book cover image, enter the book title and author, and upload directly from the "More About Me" section.

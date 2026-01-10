@@ -2,14 +2,24 @@
 
 .header-container {
   width: 96%;
-  max-width: 1400px;
+  max-width: 1680px;
   align-self: center;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: row;
   gap: 32px;
   margin: 32px auto 0;
   padding: 24px;
+}
+
+/* Force image on the left, text on the right on wide screens */
+.hero-photo {
+  order: 1;
+}
+
+.hero-text {
+  order: 2;
 }
 
 .hero-text {
@@ -56,8 +66,13 @@
   
   .hero-text {
     text-align: center;
+    order: 1;
   }
   
+  .hero-photo {
+    order: 2;
+  }
+
   .hero-photo img {
     width: 286px;
     max-width: 78vw;
