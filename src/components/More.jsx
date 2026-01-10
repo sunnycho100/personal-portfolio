@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import Reveal from './Reveal.jsx';
 import BookCarousel from './BookCarousel.jsx';
 import CommentsSection from './CommentsSection.jsx';
+import BookCoverDrop from './BookCoverDrop.jsx';
 
 // Cover Selection Modal Component
 function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
@@ -515,6 +516,15 @@ export default function More({ reloadComments, isDevMode, reloadBooks = 0, onBoo
                     </button>
                   </div>
                 </form>
+
+                {/* Drag & Drop Upload */}
+                <BookCoverDrop
+                  isDevMode={isDevMode}
+                  onBookAdded={(book) => {
+                    setBooks(prev => [book, ...prev]);
+                    if (onBooksLoaded) onBooksLoaded([book, ...books]);
+                  }}
+                />
               </div>
               )}
 

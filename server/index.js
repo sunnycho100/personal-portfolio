@@ -3,6 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+const sharp = require("sharp");
 const { PrismaClient } = require("@prisma/client");
 const { z } = require("zod");
 
@@ -21,6 +25,32 @@ app.use(
     credentials: true,
   })
 );
+
+// Resolve path to frontend public/books for saving uploaded covers
+const BOOKS_DIR = path.join(__dirname, "..", "public", "books");
+if (!fs.existsSync(BOOKS_DIR)) {
+  try {
+    fs.mkdirSync(BOOKS_DIR, { recursive: true });
+  } catch (err) {
+    console.error("Failed to create books directory:", BOOKS_DIR, err.message);
+  }
+}
+
+// Multer memory storage for processing via sharp
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+});
+
+// Helper: sanitize title/author to filename-safe slugs
+function toSlug(input) {
+  if (!input) return "unknown";
+  return input
+    .trim()
+    .replace(/\s+/g, "-") // spaces -> hyphen
+    .replace(/[^a-zA-Z0-9\-]/g, "") // remove non-alnum/hyphen
+    .replace(/-+/g, "-"); // collapse multiple hyphens
+}
 
 // Helper function to enhance Google Books image quality
 function enhanceImageQuality(url) {
@@ -335,6 +365,71 @@ app.post("/api/books", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Failed to create book entry" });
+  }
+});
+
+// upload a local book cover (drag & drop) and create the book
+app.post("/api/books/upload", upload.single("file"), async (req, res) => {
+  try {
+    const { title, author, review } = req.body;
+
+    // Validate core fields
+    const parsed = BookInput.safeParse({ title, author, review });
+    if (!parsed.success) {
+      return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: "Cover image file is required" });
+    }
+
+    // Build filename: Book-title_Author-name.jpg
+    const titleSlug = toSlug(title);
+    const authorSlug = toSlug(author || "");
+    const baseName = authorSlug && authorSlug.length
+      ? `${titleSlug}_${authorSlug}`
+      : `${titleSlug}`;
+    const fileName = `${baseName}.jpg`;
+    const destPath = path.join(BOOKS_DIR, fileName);
+
+    // Convert to JPEG via sharp and write to public/books
+    await sharp(req.file.buffer)
+      .jpeg({ quality: 90 })
+      .toFile(destPath);
+
+    const imagePath = `/books/${fileName}`; // path used by frontend
+
+    // Create DB record
+    const created = await prisma.book.create({
+      data: {
+        title,
+        author: author && author.length ? author : null,
+        imagePath,
+        review: review && review.length ? review : null,
+      },
+    });
+
+    // Upsert into archive
+    const normalizedAuthor = author && author.length ? author : null;
+    try {
+      await prisma.bookArchive.upsert({
+        where: { title_author: { title, author: normalizedAuthor } },
+        update: {
+          lastSeenAt: new Date(),
+          timesAdded: { increment: 1 },
+          isDeleted: false,
+          imagePath,
+        },
+        create: { title, author: normalizedAuthor, imagePath },
+      });
+    } catch (archiveError) {
+      console.error("Archive update failed (non-critical):", archiveError.message);
+    }
+
+    res.status(201).json(created);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Failed to upload cover and create book" });
   }
 });
 
