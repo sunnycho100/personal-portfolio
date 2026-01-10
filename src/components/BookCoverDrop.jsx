@@ -61,7 +61,10 @@ export default function BookCoverDrop({ onBookAdded, isDevMode }) {
         body: fd,
       });
 
-      if (!res.ok) throw new Error('Upload failed');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(errorData.error || `Upload failed with status ${res.status}`);
+      }
       const newBook = await res.json();
       // Inform parent
       if (onBookAdded) {
@@ -81,7 +84,7 @@ export default function BookCoverDrop({ onBookAdded, isDevMode }) {
       alert(`Uploaded and added "${newBook.title}"`);
     } catch (err) {
       console.error('Upload error:', err);
-      alert('Failed to upload. Please try again.');
+      alert(`Failed to upload: ${err.message}`);
     } finally {
       setSubmitting(false);
     }

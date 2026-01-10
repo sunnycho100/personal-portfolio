@@ -371,15 +371,23 @@ app.post("/api/books", async (req, res) => {
 // upload a local book cover (drag & drop) and create the book
 app.post("/api/books/upload", upload.single("file"), async (req, res) => {
   try {
+    console.log('Upload request received:', { 
+      hasFile: !!req.file, 
+      title: req.body.title, 
+      author: req.body.author 
+    });
+    
     const { title, author, review } = req.body;
 
     // Validate core fields
     const parsed = BookInput.safeParse({ title, author, review });
     if (!parsed.success) {
+      console.error('Validation failed:', parsed.error.flatten());
       return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
     }
 
     if (!req.file) {
+      console.error('No file in request');
       return res.status(400).json({ error: "Cover image file is required" });
     }
 
@@ -391,6 +399,8 @@ app.post("/api/books/upload", upload.single("file"), async (req, res) => {
       : `${titleSlug}`;
     const fileName = `${baseName}.jpg`;
     const destPath = path.join(BOOKS_DIR, fileName);
+
+    console.log('Saving cover to:', destPath);
 
     // Convert to JPEG via sharp and write to public/books
     await sharp(req.file.buffer)
@@ -408,6 +418,8 @@ app.post("/api/books/upload", upload.single("file"), async (req, res) => {
         review: review && review.length ? review : null,
       },
     });
+
+    console.log('Book created successfully:', created.id);
 
     // Upsert into archive
     const normalizedAuthor = author && author.length ? author : null;
@@ -428,7 +440,7 @@ app.post("/api/books/upload", upload.single("file"), async (req, res) => {
 
     res.status(201).json(created);
   } catch (e) {
-    console.error(e);
+    console.error('Upload error:', e);
     res.status(500).json({ error: "Failed to upload cover and create book" });
   }
 });
