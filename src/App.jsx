@@ -8,6 +8,7 @@ import Experience from './components/Experience.jsx';
 import Skills from './components/Skills.jsx';
 import Activities from './components/Activities.jsx';
 import Github from './components/Github.jsx';   // new
+import Books from './components/Books.jsx';     // new Books section
 import More from './components/More.jsx';
 import Contact from './components/Contact.jsx';
 import DeveloperMode from './components/DeveloperMode.jsx';
@@ -45,12 +46,14 @@ export default function App() {
         <Experience />
         <Skills githubData={githubData} />
         <Activities />
-        <Github githubData={githubData} />   {/* new tab section between Activities and More */}
-        <More 
-          reloadComments={reloadComments} 
+        <Github githubData={githubData} />   {/* new tab section between Activities and Books */}
+        <Books 
           isDevMode={isDevMode} 
           reloadBooks={reloadBooks}
           onBooksLoaded={setBooks}
+        />
+        <More 
+          reloadComments={reloadComments} 
         />
         <Contact onCommentAdded={() => setReloadComments(prev => prev + 1)} />
       </div>

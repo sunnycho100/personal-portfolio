@@ -5,6 +5,25 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0] - 2026-01-11
+
+### Changed
+- Refactored "Books I Love" into a dedicated section above "More About Me" for greater visibility and importance.
+- Created new `Books.jsx` component and moved all book-related features out of `More.jsx`.
+- Updated navigation to include a "Books" tab.
+- Added new CSS module for Books section.
+- Automatic filename sanitization for uploaded covers (spaces replaced, only alphanumeric and hyphens, underscores between title and author).
+- Error handling improvements: Upload errors now show specific backend messages in the UI.
+- Added `multer` and `sharp` to backend dependencies for file upload and image processing.
+- Added `REACT_APP_API_URL` to `.env` for reliable frontend-backend connection.
+
+### Changed
+- Improved backend logging for upload endpoint to aid debugging.
+- Restarted frontend and backend to ensure all environment/config changes are picked up.
+
+### Fixed
+- Upload failures now show clear error messages to the user.
+
 ## [1.11.0] - 2026-01-10
 
 ### Changed
@@ -23,21 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.0] - 2026-01-10
 
-### Added
-- **Drag-and-drop Book Cover Upload**: Users (in Developer Mode) can now drag and drop a book cover image, enter the book title and author, and upload directly from the "More About Me" section.
-- Backend `/api/books/upload` endpoint: Accepts image, title, and author, saves the cover as a JPEG with the format `Book-title_Author-name.jpg` in `public/books/`, and creates a Book/BookArchive DB entry.
-- New React component `BookCoverDrop.jsx` for the drag-and-drop UI, with preview and validation.
-- Automatic filename sanitization for uploaded covers (spaces replaced, only alphanumeric and hyphens, underscores between title and author).
-- Error handling improvements: Upload errors now show specific backend messages in the UI.
-- Added `multer` and `sharp` to backend dependencies for file upload and image processing.
-- Added `REACT_APP_API_URL` to `.env` for reliable frontend-backend connection.
-
-### Changed
-- Improved backend logging for upload endpoint to aid debugging.
-- Restarted frontend and backend to ensure all environment/config changes are picked up.
-
-### Fixed
-- Upload failures now show clear error messages to the user.
 
 ## [1.8.1] - 2026-01-07
 

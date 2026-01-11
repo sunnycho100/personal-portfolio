@@ -47,6 +47,9 @@
 /* More section: accordion, book interests */
 @import "./styles/components/sections/More.css";
 
+/* Books section: dedicated book showcase */
+@import "./styles/components/sections/Books.css";
+
 /* Contact section: social icons, resume button */
 @import "./styles/components/sections/Contact.css";
 

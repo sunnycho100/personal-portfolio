@@ -28,6 +28,7 @@ export default function TopNav() {
   'skills',
   'activities',
   'github',
+  'books',
   'more',
   'contact'
 ]);
@@ -47,7 +48,8 @@ export default function TopNav() {
             <li><a className="tab" href="#experience">Experience</a></li>
             <li><a className="tab" href="#skills">Skills</a></li>
             <li><a className="tab" href="#activities">Activities</a></li>
-            <li><a className="tab" href="#github">GitHub</a></li>   {/* new tab */}
+            <li><a className="tab" href="#github">GitHub</a></li>
+            <li><a className="tab" href="#books">Books</a></li>
             <li><a className="tab" href="#more">More</a></li>
             <li><a className="tab" href="#contact">Contact</a></li>
           </ul>

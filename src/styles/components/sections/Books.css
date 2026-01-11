@@ -1,0 +1,63 @@
+/* Books I Love Section */
+
+#books .accordion {
+  width: 96%;
+  max-width: 1400px;
+  align-self: center;
+  margin: 8px auto 20px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  overflow: clip;
+}
+
+#books .accordion summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+  user-select: none;
+}
+
+#books .accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+#books .accordion .summary-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#books .accordion .summary-left i {
+  color: var(--accent);
+}
+
+#books .accordion .chev {
+  transition: transform .25s ease;
+}
+
+#books .accordion[open] .chev {
+  transform: rotate(180deg);
+}
+
+#books .accordion-content {
+  padding: 4px 20px 18px;
+  border-top: 1px solid #efefef;
+}
+
+#books .about-block {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#books .about-block h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
