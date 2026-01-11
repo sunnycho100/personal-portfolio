@@ -180,6 +180,8 @@ const BookInput = z.object({
 });
 
 // Helper function to search Korean books via Aladin API
+// DISABLED: Aladin API has low quality covers, using manual upload instead
+/*
 async function searchAladinBooks(title, author = '') {
   try {
     const ALADIN_API_KEY = process.env.ALADIN_API_KEY;
@@ -235,6 +237,7 @@ async function searchAladinBooks(title, author = '') {
     return [];
   }
 }
+*/
 
 // health check
 app.get("/api/health", (req, res) => res.json({ ok: true }));
@@ -297,6 +300,8 @@ app.get("/api/books", async (req, res) => {
 });
 
 // search for Korean book covers from Aladin API
+// DISABLED: Aladin API has low quality covers
+/*
 app.get("/api/books/search/korean", async (req, res) => {
   const { title, author } = req.query;
   
@@ -312,6 +317,7 @@ app.get("/api/books/search/korean", async (req, res) => {
     res.status(500).json({ error: "Failed to search Korean books" });
   }
 });
+*/
 
 // search for book covers from Google Books API (returns up to 5 options)
 app.get("/api/books/search", async (req, res) => {
@@ -458,10 +464,11 @@ app.post("/api/books/upload", upload.single("file"), async (req, res) => {
     console.log('Upload request received:', { 
       hasFile: !!req.file, 
       title: req.body.title, 
-      author: req.body.author 
+      author: req.body.author,
+      language: req.body.language
     });
     
-    const { title, author, review } = req.body;
+    const { title, author, review, language } = req.body;
 
     // Validate core fields
     const parsed = BookInput.safeParse({ title, author, review });
@@ -500,6 +507,7 @@ app.post("/api/books/upload", upload.single("file"), async (req, res) => {
         author: author && author.length ? author : null,
         imagePath,
         review: review && review.length ? review : null,
+        language: language && language.length ? language : 'en', // Default to 'en' if not provided
       },
     });
 

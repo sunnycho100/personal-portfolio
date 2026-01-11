@@ -5,6 +5,22 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0] - 2026-01-11
+
+### Changed
+- **Korean Books Section**: Simplified to manual upload only
+  - Removed Aladin API search functionality (commented out for future reference)
+  - Korean books now use drag-and-drop upload exclusively via BookCoverDrop
+  - Updated BookCoverDrop component to support language parameter ('en' or 'ko')
+  - Backend upload endpoint now accepts and stores language field
+  - Improved quality control by using manual uploads instead of external API covers
+
+### Technical
+- Commented out `searchAladinBooks()` function in server/index.js
+- Commented out `GET /api/books/search/korean` endpoint
+- Updated BookCoverDrop.jsx to accept language prop (default: 'en')
+- Updated POST /api/books/upload to handle language field in database
+
 ## [1.13.0] - 2026-01-11
 
 ### Added

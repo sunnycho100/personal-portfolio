@@ -16,6 +16,7 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
   // Group covers by source
   const openLibraryCovers = covers.filter(c => c.source === 'Open Library');
   const googleBooksCovers = covers.filter(c => c.source === 'Google Books');
+  const aladinCovers = covers.filter(c => c.source === 'Aladin');
 
   const modalStyles = {
     overlay: {
@@ -72,6 +73,9 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
     },
     googleBooksBadge: {
       background: '#007bff'
+    },
+    aladinBadge: {
+      background: '#ff6b35'
     },
     closeBtn: {
       position: 'absolute',
@@ -217,6 +221,49 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
                       {cover.publishedDate && (
                         <div style={{ fontSize: '10px', color: '#adb5bd', marginTop: '4px' }}>
                           {new Date(cover.publishedDate).getFullYear()}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Aladin Section */}
+            {aladinCovers.length > 0 && (
+              <div>
+                <div style={modalStyles.sectionHeader}>
+                  <span style={{...modalStyles.badge, ...modalStyles.aladinBadge}}>ALADIN</span>
+                  <span style={{ fontSize: '14px', color: '#495057' }}>Korean Books</span>
+                </div>
+                <div style={modalStyles.grid}>
+                  {aladinCovers.map((cover, index) => (
+                    <div
+                      key={cover.id || index}
+                      style={modalStyles.coverCard}
+                      onClick={() => onSelect(cover.coverUrl)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#ff6b35';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 107, 53, 0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#e9ecef';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      <img 
+                        src={cover.coverUrl} 
+                        alt={cover.title}
+                        style={modalStyles.coverImage}
+                        onError={(e) => { e.target.src = '/books/default-book-cover.jpg'; }}
+                      />
+                      <div style={modalStyles.coverTitle}>{cover.title}</div>
+                      <div style={modalStyles.coverAuthor}>{cover.author}</div>
+                      {cover.publishedDate && (
+                        <div style={{ fontSize: '10px', color: '#adb5bd', marginTop: '4px' }}>
+                          {cover.publishedDate}
                         </div>
                       )}
                     </div>
@@ -746,90 +793,25 @@ export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
           <summary>
             <div className="summary-left">
               <i className="fa-solid fa-book" aria-hidden="true"></i>
-              <span>Korean Books (한국 도서)</span>
+              <span>Korean Books</span>
             </div>
             <i className="fa-solid fa-chevron-down chev" aria-hidden="true"></i>
           </summary>
 
           <div className="accordion-content stagger">
             <div className="about-block">
-              {/* Add New Korean Book Form - Only visible in Developer Mode */}
+              {/* Drag & Drop Upload for Korean Books - Only visible in Developer Mode */}
               {isDevMode && (
               <div className="add-book-form" style={{ marginBottom: '20px', padding: '15px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e9ecef' }}>
-                <h4 style={{ margin: '0 0 12px 0', color: '#495057', fontSize: '16px' }}>Add a New Korean Book</h4>
-                <form onSubmit={searchKoreanCovers} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <input
-                    type="text"
-                    placeholder="책 제목 (e.g., 채식주의자)"
-                    value={newKoreanBookTitle}
-                    onChange={(e) => setNewKoreanBookTitle(e.target.value)}
-                    style={{ 
-                      padding: '8px 12px', 
-                      border: '1px solid #ced4da', 
-                      borderRadius: '4px', 
-                      fontSize: '14px'
-                    }}
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="저자 (e.g., 한강)"
-                    value={newKoreanBookAuthor}
-                    onChange={(e) => setNewKoreanBookAuthor(e.target.value)}
-                    style={{ 
-                      padding: '8px 12px', 
-                      border: '1px solid #ced4da', 
-                      borderRadius: '4px', 
-                      fontSize: '14px'
-                    }}
-                  />
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button 
-                      type="submit" 
-                      disabled={searchingKoreanCovers || addingKoreanBook || !newKoreanBookTitle.trim()}
-                      style={{ 
-                        flex: 1,
-                        padding: '8px 16px', 
-                        background: (searchingKoreanCovers || addingKoreanBook) ? '#6c757d' : '#007bff', 
-                        color: 'white', 
-                        border: 'none', 
-                        borderRadius: '4px', 
-                        cursor: (searchingKoreanCovers || addingKoreanBook) ? 'not-allowed' : 'pointer',
-                        fontSize: '14px'
-                      }}
-                    >
-                      {searchingKoreanCovers ? 'Searching...' : 'Search Aladin (표지 선택)'}
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={addNewKoreanBook}
-                      disabled={searchingKoreanCovers || addingKoreanBook || !newKoreanBookTitle.trim()}
-                      style={{ 
-                        padding: '8px 16px', 
-                        background: (searchingKoreanCovers || addingKoreanBook) ? '#6c757d' : '#28a745', 
-                        color: 'white', 
-                        border: 'none', 
-                        borderRadius: '4px', 
-                        cursor: (searchingKoreanCovers || addingKoreanBook) ? 'not-allowed' : 'pointer',
-                        fontSize: '14px'
-                      }}
-                    >
-                      {addingKoreanBook ? 'Adding...' : 'Quick Add'}
-                    </button>
-                  </div>
-                </form>
-              </div>
-              )}
-
-              {/* Korean Cover Selection Modal */}
-              {showKoreanCoverModal && (
-                <CoverSelectionModal
-                  covers={koreanCoverOptions}
-                  title={newKoreanBookTitle}
-                  author={newKoreanBookAuthor}
-                  onSelect={addKoreanBookWithCover}
-                  onClose={() => setShowKoreanCoverModal(false)}
+                <h4 style={{ margin: '0 0 12px 0', color: '#495057', fontSize: '16px' }}>Add Korean Book (Manual Upload)</h4>
+                <BookCoverDrop
+                  isDevMode={isDevMode}
+                  language="ko"
+                  onBookAdded={(book) => {
+                    setKoreanBooks(prev => [book, ...prev]);
+                  }}
                 />
+              </div>
               )}
 
               {loadingKorean ? (

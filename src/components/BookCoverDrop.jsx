@@ -1,7 +1,7 @@
 // src/components/BookCoverDrop.jsx
 import { useState, useRef } from 'react';
 
-export default function BookCoverDrop({ onBookAdded, isDevMode }) {
+export default function BookCoverDrop({ onBookAdded, isDevMode, language = 'en' }) {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -55,6 +55,7 @@ export default function BookCoverDrop({ onBookAdded, isDevMode }) {
       fd.append('file', file);
       fd.append('title', title.trim());
       if (author.trim()) fd.append('author', author.trim());
+      fd.append('language', language); // Add language parameter
 
       const res = await fetch(`${API_URL}/api/books/upload`, {
         method: 'POST',
