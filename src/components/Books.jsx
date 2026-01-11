@@ -314,7 +314,7 @@ export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
     const fetchBooks = async () => {
       try {
         const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
-        const response = await fetch(`${API_URL}/api/books`);
+        const response = await fetch(`${API_URL}/api/books?language=en`);
         if (response.ok) {
           const apiBooks = await response.json();
           // Transform API books to match expected format

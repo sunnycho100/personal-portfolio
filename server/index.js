@@ -43,13 +43,49 @@ const upload = multer({
 });
 
 // Helper: sanitize title/author to filename-safe slugs
+// Korean Hangul romanization mapping
+const HANGUL_INITIALS = ['g', 'kk', 'n', 'd', 'tt', 'r', 'm', 'b', 'pp', 's', 'ss', '', 'j', 'jj', 'ch', 'k', 't', 'p', 'h'];
+const HANGUL_MEDIALS = ['a', 'ae', 'ya', 'yae', 'eo', 'e', 'yeo', 'ye', 'o', 'wa', 'wae', 'oe', 'yo', 'u', 'weo', 'we', 'wi', 'yu', 'eu', 'ui', 'i'];
+const HANGUL_FINALS = ['', 'k', 'k', 'k', 'n', 'n', 'n', 't', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'l', 'm', 'p', 'p', 't', 't', 'ng', 't', 't', 'k', 't', 'p', 't'];
+
+function romanizeKorean(text) {
+  if (!text) return '';
+  
+  let result = '';
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    
+    // Check if it's a Hangul syllable (가-힣)
+    if (code >= 0xAC00 && code <= 0xD7A3) {
+      const syllableIndex = code - 0xAC00;
+      const initialIndex = Math.floor(syllableIndex / 588);
+      const medialIndex = Math.floor((syllableIndex % 588) / 28);
+      const finalIndex = syllableIndex % 28;
+      
+      result += HANGUL_INITIALS[initialIndex];
+      result += HANGUL_MEDIALS[medialIndex];
+      result += HANGUL_FINALS[finalIndex];
+    } else {
+      // Keep non-Hangul characters as-is
+      result += text[i];
+    }
+  }
+  
+  return result;
+}
+
 function toSlug(input) {
   if (!input) return "unknown";
-  return input
+  
+  // First romanize Korean characters
+  const romanized = romanizeKorean(input);
+  
+  return romanized
     .trim()
     .replace(/\s+/g, "-") // spaces -> hyphen
-    .replace(/[^a-zA-Z0-9\-]/g, "") // remove non-alnum/hyphen
-    .replace(/-+/g, "-"); // collapse multiple hyphens
+    .replace(/[^a-zA-Z0-9\-]/g, "") // remove non-alphanumeric except hyphens
+    .replace(/-+/g, "-") // collapse multiple hyphens
+    .toLowerCase();
 }
 
 // Helper function to enhance Google Books image quality
@@ -482,13 +518,36 @@ app.post("/api/books/upload", upload.single("file"), async (req, res) => {
       return res.status(400).json({ error: "Cover image file is required" });
     }
 
-    // Build filename: Book-title_Author-name.jpg
-    const titleSlug = toSlug(title);
-    const authorSlug = toSlug(author || "");
-    const baseName = authorSlug && authorSlug.length
-      ? `${titleSlug}_${authorSlug}`
-      : `${titleSlug}`;
-    const fileName = `${baseName}.jpg`;
+    // Build filename
+    let fileName;
+    if (language === 'ko') {
+      // For Korean books: Use title and author inputs with romanization
+      console.log('Korean book title:', title, 'author:', author);
+      
+      const titleSlug = toSlug(title);
+      const authorSlug = toSlug(author || "");
+      
+      if (titleSlug && titleSlug !== 'unknown' && titleSlug.trim() && titleSlug !== '-') {
+        // Use romanized title_author format for Korean books
+        const baseName = authorSlug && authorSlug.length && authorSlug !== 'unknown'
+          ? `${titleSlug}_${authorSlug}`
+          : `${titleSlug}`;
+        fileName = `${baseName}.jpg`;
+      } else {
+        // Fallback: use timestamp with 'korean-book' prefix
+        const timestamp = Date.now();
+        fileName = `korean-book-${timestamp}.jpg`;
+      }
+      console.log('Korean book filename:', fileName);
+    } else {
+      // Build filename from title and author for English books
+      const titleSlug = toSlug(title);
+      const authorSlug = toSlug(author || "");
+      const baseName = authorSlug && authorSlug.length
+        ? `${titleSlug}_${authorSlug}`
+        : `${titleSlug}`;
+      fileName = `${baseName}.jpg`;
+    }
     const destPath = path.join(BOOKS_DIR, fileName);
 
     console.log('Saving cover to:', destPath);
