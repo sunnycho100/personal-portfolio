@@ -5,24 +5,31 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.12.0] - 2026-01-11
+## [1.13.0] - 2026-01-11
+
+### Added
+- **Korean Books Integration**: Added dedicated Korean books section using Aladin API
+  - Separate accordion for Korean books (한국 도서) within Books section
+  - Aladin API integration for searching Korean book covers by title and author
+  - Database fields: `language` ("en" or "ko") and `isbn` for book identification
+  - New backend endpoint: `GET /api/books/search/korean` for Aladin book search
+  - Updated `GET /api/books` to filter by language
+  - Secure API key storage in backend environment variables
+  - Korean-language UI for adding books (책 제목, 저자)
 
 ### Changed
 - Refactored "Books I Love" into a dedicated section above "More About Me" for greater visibility and importance.
 - Created new `Books.jsx` component and moved all book-related features out of `More.jsx`.
 - Updated navigation to include a "Books" tab.
 - Added new CSS module for Books section.
-- Automatic filename sanitization for uploaded covers (spaces replaced, only alphanumeric and hyphens, underscores between title and author).
-- Error handling improvements: Upload errors now show specific backend messages in the UI.
-- Added `multer` and `sharp` to backend dependencies for file upload and image processing.
-- Added `REACT_APP_API_URL` to `.env` for reliable frontend-backend connection.
+- Changed main Books heading from "Books I Love" to "Books"
+- First accordion: "Books that shaped my thinking" (open by default)
+- Second accordion: "Korean Books (한국 도서)" (closed by default)
+- Database schema updated with migration `20260111053336_add_language_and_isbn_to_books`
 
-### Changed
-- Improved backend logging for upload endpoint to aid debugging.
-- Restarted frontend and backend to ensure all environment/config changes are picked up.
-
-### Fixed
-- Upload failures now show clear error messages to the user.
+### Security
+- Aladin API key (`ttbsuch42831430001`) securely stored in backend `.env`
+- API key not exposed to frontend/client
 
 ## [1.11.0] - 2026-01-10
 

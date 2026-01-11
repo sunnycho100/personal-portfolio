@@ -175,7 +175,66 @@ const BookInput = z.object({
   title: z.string().trim().min(1).max(200),
   author: z.string().trim().max(150).optional().or(z.literal("")),
   review: z.string().trim().max(500).optional().or(z.literal("")),
+  language: z.enum(["en", "ko"]).optional().default("en"),
+  isbn: z.string().trim().max(20).optional().or(z.literal("")),
 });
+
+// Helper function to search Korean books via Aladin API
+async function searchAladinBooks(title, author = '') {
+  try {
+    const ALADIN_API_KEY = process.env.ALADIN_API_KEY;
+    if (!ALADIN_API_KEY) {
+      console.error('Aladin API key not configured');
+      return [];
+    }
+
+    // Build query string
+    let query = title;
+    if (author) {
+      query += ` ${author}`;
+    }
+
+    // Aladin API search endpoint
+    const url = `http://www.aladin.co.kr/ttb/api/ItemSearch.aspx`;
+    const params = {
+      ttbkey: ALADIN_API_KEY,
+      Query: query,
+      QueryType: 'Title', // or 'Author', 'Publisher', 'Keyword'
+      MaxResults: 5,
+      start: 1,
+      SearchTarget: 'Book',
+      output: 'js', // JSON format
+      Version: '20131101'
+    };
+
+    const response = await axios.get(url, { params });
+    const data = response.data;
+
+    if (!data.item || data.item.length === 0) {
+      return [];
+    }
+
+    // Transform Aladin results to our format
+    return data.item.map(book => ({
+      id: book.isbn13 || book.isbn,
+      source: 'Aladin',
+      title: book.title,
+      author: book.author || '',
+      coverUrl: book.cover || '', // Aladin provides direct cover URL
+      isbn: book.isbn13 || book.isbn,
+      publishedDate: book.pubDate || '',
+      description: book.description ? book.description.slice(0, 150) + '...' : '',
+      link: book.link || '' // Link to Aladin product page
+    }));
+  } catch (error) {
+    console.error('Aladin API error:', error.message);
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', error.response.data);
+    }
+    return [];
+  }
+}
 
 // health check
 app.get("/api/health", (req, res) => res.json({ ok: true }));
@@ -220,16 +279,37 @@ app.post("/api/comments", async (req, res) => {
 
 // ----------------- Books API -----------------
 
-// list all books, newest first
+// list all books, newest first (with optional language filter)
 app.get("/api/books", async (req, res) => {
   try {
+    const { language } = req.query;
+    const where = language ? { language } : {};
+    
     const books = await prisma.book.findMany({
+      where,
       orderBy: { createdAt: "desc" },
     });
     res.json(books);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Failed to fetch books" });
+  }
+});
+
+// search for Korean book covers from Aladin API
+app.get("/api/books/search/korean", async (req, res) => {
+  const { title, author } = req.query;
+  
+  if (!title) {
+    return res.status(400).json({ error: "Title is required" });
+  }
+
+  try {
+    const results = await searchAladinBooks(title, author);
+    res.json(results);
+  } catch (e) {
+    console.error('Korean book search error:', e);
+    res.status(500).json({ error: "Failed to search Korean books" });
   }
 });
 
@@ -299,15 +379,15 @@ app.post("/api/books", async (req, res) => {
     return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });
   }
   
-  const { title, author, review } = parsed.data;
+  const { title, author, review, language, isbn } = parsed.data;
   // Allow passing imagePath directly if user chose a cover
   const chosenImagePath = req.body.imagePath;
 
   try {
     let imagePath = chosenImagePath || '/books/default-book-cover.jpg';
     
-    // Only fetch from Google if no cover was provided
-    if (!chosenImagePath) {
+    // Only fetch from Google if no cover was provided and language is English
+    if (!chosenImagePath && language === 'en') {
       const query = author ? `${title}+inauthor:${author}` : title;
       const googleResponse = await axios.get(
         `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=1`
@@ -333,6 +413,8 @@ app.post("/api/books", async (req, res) => {
         author: author && author.length ? author : null,
         imagePath,
         review: review && review.length ? review : null,
+        language: language || 'en',
+        isbn: isbn && isbn.length ? isbn : null,
       },
     });
 
@@ -355,6 +437,8 @@ app.post("/api/books", async (req, res) => {
           title: title,
           author: normalizedAuthor,
           imagePath: imagePath,
+          language: language || 'en',
+          isbn: isbn && isbn.length ? isbn : null,
         },
       });
     } catch (archiveError) {

@@ -25,10 +25,13 @@ model Book {
   author      String?  @db.VarChar(150)
   imagePath   String   @db.VarChar(300)  // e.g., "/books/How to Win Friends.jpg"
   review      String?  @db.VarChar(500)  // optional brief review
+  language    String   @default("en") @db.VarChar(10)  // "en" or "ko"
+  isbn        String?  @db.VarChar(20)   // ISBN for Korean books from Aladin
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([title])
+  @@index([language])
   @@index([createdAt])
 }
 model BookArchive {
@@ -36,6 +39,8 @@ model BookArchive {
   title         String   @db.VarChar(200)
   author        String?  @db.VarChar(150)
   imagePath     String   @db.VarChar(300)  // First cover image used
+  language      String   @default("en") @db.VarChar(10)  // "en" or "ko"
+  isbn          String?  @db.VarChar(20)   // ISBN for Korean books
   firstAddedAt  DateTime @default(now())
   lastSeenAt    DateTime @updatedAt
   timesAdded    Int      @default(1)       // Track how many times added
@@ -43,5 +48,6 @@ model BookArchive {
 
   @@unique([title, author])  // Prevent duplicates based on title + author
   @@index([title])
+  @@index([language])
   @@index([firstAddedAt])
 }

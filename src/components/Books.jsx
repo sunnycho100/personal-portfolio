@@ -234,13 +234,23 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
 
 export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
   const [books, setBooks] = useState([]);
+  const [koreanBooks, setKoreanBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingKorean, setLoadingKorean] = useState(true);
   const [newBookTitle, setNewBookTitle] = useState('');
   const [newBookAuthor, setNewBookAuthor] = useState('');
   const [addingBook, setAddingBook] = useState(false);
   const [searchingCovers, setSearchingCovers] = useState(false);
   const [coverOptions, setCoverOptions] = useState([]);
   const [showCoverModal, setShowCoverModal] = useState(false);
+  
+  // Korean books state
+  const [newKoreanBookTitle, setNewKoreanBookTitle] = useState('');
+  const [newKoreanBookAuthor, setNewKoreanBookAuthor] = useState('');
+  const [addingKoreanBook, setAddingKoreanBook] = useState(false);
+  const [searchingKoreanCovers, setSearchingKoreanCovers] = useState(false);
+  const [koreanCoverOptions, setKoreanCoverOptions] = useState([]);
+  const [showKoreanCoverModal, setShowKoreanCoverModal] = useState(false);
 
   // Static fallback books (your original books)
   const fallbackBooks = useMemo(() => [
@@ -295,6 +305,38 @@ export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
     
     fetchBooks();
   }, [fallbackBooks, reloadBooks, onBooksLoaded]);
+
+  // Fetch Korean books from backend
+  useEffect(() => {
+    const fetchKoreanBooks = async () => {
+      try {
+        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+        const response = await fetch(`${API_URL}/api/books?language=ko`);
+        if (response.ok) {
+          const apiBooks = await response.json();
+          // Transform API books to match expected format
+          const transformedBooks = apiBooks.map(book => ({
+            id: book.id,
+            src: book.imagePath,
+            title: book.title,
+            author: book.author || '',
+            review: book.review || '',
+            isbn: book.isbn || ''
+          }));
+          setKoreanBooks(transformedBooks);
+        } else {
+          setKoreanBooks([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch Korean books:', error);
+        setKoreanBooks([]);
+      } finally {
+        setLoadingKorean(false);
+      }
+    };
+    
+    fetchKoreanBooks();
+  }, [reloadBooks]);
 
   // Search for book covers
   const searchCovers = async (e) => {
@@ -432,11 +474,155 @@ export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
     }
   };
 
+  // Search for Korean book covers from Aladin
+  const searchKoreanCovers = async (e) => {
+    e.preventDefault();
+    if (!isDevMode) {
+      alert('Developer mode required to add books');
+      return;
+    }
+    if (!newKoreanBookTitle.trim()) return;
+
+    setSearchingKoreanCovers(true);
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const params = new URLSearchParams({ title: newKoreanBookTitle.trim() });
+      if (newKoreanBookAuthor.trim()) {
+        params.append('author', newKoreanBookAuthor.trim());
+      }
+      
+      const response = await fetch(`${API_URL}/api/books/search/korean?${params}`);
+      if (response.ok) {
+        const covers = await response.json();
+        setKoreanCoverOptions(covers);
+        setShowKoreanCoverModal(true);
+      } else {
+        throw new Error('Failed to search Korean book covers');
+      }
+    } catch (error) {
+      console.error('Failed to search Korean book covers:', error);
+      alert('Failed to search for Korean book covers. Please try again.');
+    } finally {
+      setSearchingKoreanCovers(false);
+    }
+  };
+
+  // Add Korean book with selected cover
+  const addKoreanBookWithCover = async (selectedCoverUrl) => {
+    if (!isDevMode) {
+      alert('Developer mode required to add books');
+      setShowKoreanCoverModal(false);
+      setKoreanCoverOptions([]);
+      return;
+    }
+    setShowKoreanCoverModal(false);
+    setAddingKoreanBook(true);
+    
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      // Find the selected book to get ISBN
+      const selectedBook = koreanCoverOptions.find(book => book.coverUrl === selectedCoverUrl);
+      
+      const response = await fetch(`${API_URL}/api/books`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: newKoreanBookTitle.trim(),
+          author: newKoreanBookAuthor.trim(),
+          imagePath: selectedCoverUrl,
+          language: 'ko',
+          isbn: selectedBook?.isbn || '',
+        }),
+      });
+
+      if (response.ok) {
+        const newBook = await response.json();
+        const transformedBook = {
+          id: newBook.id,
+          src: newBook.imagePath,
+          title: newBook.title,
+          author: newBook.author || '',
+          review: newBook.review || '',
+          isbn: newBook.isbn || ''
+        };
+        setKoreanBooks(prev => [transformedBook, ...prev]);
+        
+        // Clear form
+        setNewKoreanBookTitle('');
+        setNewKoreanBookAuthor('');
+        setKoreanCoverOptions([]);
+        
+        alert(`Successfully added "${newBook.title}" to your Korean book collection!`);
+      } else {
+        throw new Error('Failed to add Korean book');
+      }
+    } catch (error) {
+      console.error('Failed to add Korean book:', error);
+      alert('Failed to add Korean book. Please try again.');
+    } finally {
+      setAddingKoreanBook(false);
+    }
+  };
+
+  const addNewKoreanBook = async (e) => {
+    e.preventDefault();
+    if (!isDevMode) {
+      alert('Developer mode required to add books');
+      return;
+    }
+    if (!newKoreanBookTitle.trim()) return;
+
+    setAddingKoreanBook(true);
+    try {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_URL}/api/books`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: newKoreanBookTitle.trim(),
+          author: newKoreanBookAuthor.trim(),
+          language: 'ko',
+        }),
+      });
+
+      if (response.ok) {
+        const newBook = await response.json();
+        const transformedBook = {
+          id: newBook.id,
+          src: newBook.imagePath,
+          title: newBook.title,
+          author: newBook.author || '',
+          review: newBook.review || '',
+          isbn: newBook.isbn || ''
+        };
+        setKoreanBooks(prev => [transformedBook, ...prev]);
+        
+        // Clear form
+        setNewKoreanBookTitle('');
+        setNewKoreanBookAuthor('');
+        
+        alert(`Successfully added "${newBook.title}" to your Korean book collection!`);
+      } else {
+        throw new Error('Failed to add Korean book');
+      }
+    } catch (error) {
+      console.error('Failed to add Korean book:', error);
+      alert('Failed to add Korean book. Please try again.');
+    } finally {
+      setAddingKoreanBook(false);
+    }
+  };
+
   return (
     <section id="books" className="section">
       <Reveal delay="300ms" className="list-container">
-        <h2>Books I Love</h2>
+        <h2>Books</h2>
 
+        {/* English Books - Open by default */}
         <details className="accordion" open>
           <summary>
             <div className="summary-left">
@@ -548,6 +734,116 @@ export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
                       setBooks(books.filter(b => b.id !== bookId));
                       onBooksLoaded(books.filter(b => b.id !== bookId));
                     }
+                  }}
+                />
+              )}
+            </div>
+          </div>
+        </details>
+
+        {/* Korean Books - Closed by default */}
+        <details className="accordion">
+          <summary>
+            <div className="summary-left">
+              <i className="fa-solid fa-book" aria-hidden="true"></i>
+              <span>Korean Books (한국 도서)</span>
+            </div>
+            <i className="fa-solid fa-chevron-down chev" aria-hidden="true"></i>
+          </summary>
+
+          <div className="accordion-content stagger">
+            <div className="about-block">
+              {/* Add New Korean Book Form - Only visible in Developer Mode */}
+              {isDevMode && (
+              <div className="add-book-form" style={{ marginBottom: '20px', padding: '15px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e9ecef' }}>
+                <h4 style={{ margin: '0 0 12px 0', color: '#495057', fontSize: '16px' }}>Add a New Korean Book</h4>
+                <form onSubmit={searchKoreanCovers} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <input
+                    type="text"
+                    placeholder="책 제목 (e.g., 채식주의자)"
+                    value={newKoreanBookTitle}
+                    onChange={(e) => setNewKoreanBookTitle(e.target.value)}
+                    style={{ 
+                      padding: '8px 12px', 
+                      border: '1px solid #ced4da', 
+                      borderRadius: '4px', 
+                      fontSize: '14px'
+                    }}
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="저자 (e.g., 한강)"
+                    value={newKoreanBookAuthor}
+                    onChange={(e) => setNewKoreanBookAuthor(e.target.value)}
+                    style={{ 
+                      padding: '8px 12px', 
+                      border: '1px solid #ced4da', 
+                      borderRadius: '4px', 
+                      fontSize: '14px'
+                    }}
+                  />
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button 
+                      type="submit" 
+                      disabled={searchingKoreanCovers || addingKoreanBook || !newKoreanBookTitle.trim()}
+                      style={{ 
+                        flex: 1,
+                        padding: '8px 16px', 
+                        background: (searchingKoreanCovers || addingKoreanBook) ? '#6c757d' : '#007bff', 
+                        color: 'white', 
+                        border: 'none', 
+                        borderRadius: '4px', 
+                        cursor: (searchingKoreanCovers || addingKoreanBook) ? 'not-allowed' : 'pointer',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {searchingKoreanCovers ? 'Searching...' : 'Search Aladin (표지 선택)'}
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={addNewKoreanBook}
+                      disabled={searchingKoreanCovers || addingKoreanBook || !newKoreanBookTitle.trim()}
+                      style={{ 
+                        padding: '8px 16px', 
+                        background: (searchingKoreanCovers || addingKoreanBook) ? '#6c757d' : '#28a745', 
+                        color: 'white', 
+                        border: 'none', 
+                        borderRadius: '4px', 
+                        cursor: (searchingKoreanCovers || addingKoreanBook) ? 'not-allowed' : 'pointer',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {addingKoreanBook ? 'Adding...' : 'Quick Add'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+              )}
+
+              {/* Korean Cover Selection Modal */}
+              {showKoreanCoverModal && (
+                <CoverSelectionModal
+                  covers={koreanCoverOptions}
+                  title={newKoreanBookTitle}
+                  author={newKoreanBookAuthor}
+                  onSelect={addKoreanBookWithCover}
+                  onClose={() => setShowKoreanCoverModal(false)}
+                />
+              )}
+
+              {loadingKorean ? (
+                <p>Loading Korean books...</p>
+              ) : koreanBooks.length === 0 ? (
+                <p style={{ textAlign: 'center', color: '#6c757d', padding: '20px' }}>
+                  No Korean books yet. {isDevMode ? 'Add some above!' : 'Check back soon!'}
+                </p>
+              ) : (
+                <BookCarousel 
+                  books={koreanBooks} 
+                  isDevMode={isDevMode}
+                  onBookDelete={(bookId) => {
+                    setKoreanBooks(koreanBooks.filter(b => b.id !== bookId));
                   }}
                 />
               )}
