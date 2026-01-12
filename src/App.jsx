@@ -19,6 +19,7 @@ export default function App() {
   const [githubData, setGithubData] = useState(null);
   const [isDevMode, setIsDevMode] = useState(false);
   const [books, setBooks] = useState([]);
+  const [preloadedBooks, setPreloadedBooks] = useState(null);
 
   // Fetch GitHub data once at app level
   useEffect(() => {
@@ -36,6 +37,29 @@ export default function App() {
       });
   }, []);
 
+  // Preload books with low priority (after initial render)
+  useEffect(() => {
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+    
+    // Use setTimeout to defer this to after critical rendering
+    const timer = setTimeout(() => {
+      fetch(`${API_URL}/api/books?language=en`)
+        .then(res => {
+          if (res.ok) return res.json();
+          throw new Error('Failed to fetch books');
+        })
+        .then(apiBooks => {
+          setPreloadedBooks(apiBooks);
+        })
+        .catch(err => {
+          console.error('Failed to preload books:', err);
+          setPreloadedBooks([]); // Set empty array to indicate fetch was attempted
+        });
+    }, 100); // Small delay to ensure critical components render first
+
+    return () => clearTimeout(timer);
+  }, [reloadBooks]);
+
   return (
     <>
       <TopNav />
@@ -51,6 +75,7 @@ export default function App() {
           isDevMode={isDevMode} 
           reloadBooks={reloadBooks}
           onBooksLoaded={setBooks}
+          preloadedBooks={preloadedBooks}
         />
         <More 
           reloadComments={reloadComments} 

@@ -5,6 +5,35 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.0] - 2026-01-13
+
+### Performance
+- **Book Covers Preloading**: Implemented low-priority preloading of book covers API on initial page load
+  - Books API now fetches in background with 100ms delay after critical components render
+  - Eliminates loading delay when scrolling to Books section
+  - Books are ready and displayed immediately when section comes into view
+  - Improved user experience with smoother transitions between sections
+
+### Technical
+- Moved book fetching logic to App.jsx with deferred loading strategy
+- Books component now receives preloaded data via props
+- Added `preloadedBooks` state management in main App component
+
+## [1.15.0] - 2026-01-11
+
+### Fixed
+- **Korean Book Filename Generation**: Fixed issue where Korean book uploads resulted in filenames like "-.jpg"
+  - Korean books now use title and author inputs (instead of original filename) for file naming
+  - Implemented Korean-to-romanization conversion for safe filename generation
+  - Korean book filenames now follow format: `romanized-title_romanized-author.jpg`
+  - Added fallback to `korean-book-{timestamp}.jpg` if romanization fails
+  - Fixed language filtering to properly separate English and Korean book carousels
+
+### Technical
+- Updated `toSlug()` function with Korean Hangul romanization support
+- Enhanced upload endpoint logging for Korean book filename debugging
+- Improved filename sanitization for cross-platform compatibility
+
 ## [1.14.0] - 2026-01-11
 
 ### Changed

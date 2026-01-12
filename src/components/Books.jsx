@@ -279,7 +279,7 @@ function CoverSelectionModal({ covers, onSelect, onClose, title, author }) {
   );
 }
 
-export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
+export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded, preloadedBooks }) {
   const [books, setBooks] = useState([]);
   const [koreanBooks, setKoreanBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -313,6 +313,35 @@ export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
+        // If books were preloaded, use them immediately
+        if (preloadedBooks !== null) {
+          if (Array.isArray(preloadedBooks) && preloadedBooks.length > 0) {
+            // Transform API books to match expected format
+            const transformedBooks = preloadedBooks.map(book => ({
+              id: book.id,
+              src: book.imagePath,
+              title: book.title,
+              author: book.author || '',
+              review: book.review || ''
+            }));
+            // Combine API books with fallback books (API books first)
+            const allBooks = [...transformedBooks, ...fallbackBooks];
+            setBooks(allBooks);
+            if (onBooksLoaded) {
+              onBooksLoaded(allBooks);
+            }
+          } else {
+            // Preloaded but empty/failed - use fallback
+            setBooks(fallbackBooks);
+            if (onBooksLoaded) {
+              onBooksLoaded(fallbackBooks);
+            }
+          }
+          setLoading(false);
+          return;
+        }
+
+        // Fallback: fetch if not preloaded (shouldn't normally happen)
         const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
         const response = await fetch(`${API_URL}/api/books?language=en`);
         if (response.ok) {
@@ -351,7 +380,7 @@ export default function Books({ isDevMode, reloadBooks = 0, onBooksLoaded }) {
     };
     
     fetchBooks();
-  }, [fallbackBooks, reloadBooks, onBooksLoaded]);
+  }, [fallbackBooks, onBooksLoaded, preloadedBooks]);
 
   // Fetch Korean books from backend
   useEffect(() => {
