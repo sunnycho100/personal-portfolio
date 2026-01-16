@@ -85,7 +85,7 @@
 
 .timeline-dot {
   position: absolute;
-  left: calc((var(--timeline-line-width) - var(--timeline-dot-size)) / 2 - 3px);
+  left: calc((var(--timeline-line-width) - var(--timeline-dot-size)) / 2);
   top: 50%;
   transform: translateY(-50%);
   width: var(--timeline-dot-size);
