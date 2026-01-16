@@ -5,6 +5,18 @@ All notable changes to this portfolio project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.17.0] - 2026-01-16
+
+### Added
+- **Data Analytics Intern experience** at PNS Networks (Dec 2025 – Jan 2026)
+  - Full-stack freight analytics platform with Python, Flask, React, TypeScript
+  - Automated intermodal freight ETL pipelines reducing manual processing by 95%
+  - Regression modeling analysis of 100k+ shipment records with continuous risk-scoring
+
+### Technical
+- Added new experience entry to shared `experienceData` array
+- Timeline and Work Experience views both auto-update from same data source
+
 ## [1.16.0] - 2026-01-13
 
 ### Performance

@@ -33,20 +33,28 @@ export default function Experience() {
       current: false
     },
     {
-      role: "Sergeant, Network Engineer",
-      company: "Republic of Korea Army",
-      startDate: "2023-06-01",
-      endDate: "2024-12-01",
-      displayDate: "Jun 2023",
-      current: false
-    },
-    {
       role: "Student Tutor",
       company: "University of Wisconsin–Madison",
       startDate: "2025-01-01",
       endDate: null,
       displayDate: "Jan 2025",
       current: true
+    },
+    {
+      role: "Data Analytics Intern",
+      company: "PNS Networks",
+      startDate: "2025-12-01",
+      endDate: "2026-01-01",
+      displayDate: "Dec 2025",
+      current: false
+    },
+    {
+      role: "Sergeant, Network Engineer",
+      company: "Republic of Korea Army",
+      startDate: "2023-06-01",
+      endDate: "2024-12-01",
+      displayDate: "Jun 2023",
+      current: false
     }
   ];
 
@@ -118,6 +126,28 @@ export default function Experience() {
 
           <li className="list-item">
             <div className="role-line">
+              <strong>Student Tutor</strong> — University of Wisconsin–Madison
+              <span className="meta">Jan 2025 – Present · Madison, WI</span>
+            </div>
+            <ul className="bullet-list stagger">
+              <li>Provided tutoring in Physics, Chemistry, Mathematics, and Computer Engineering, adapting explanations to individual learning styles.</li>
+              <li>Supported peers through both paid and volunteer tutoring, reinforcing subject mastery while developing communication and mentoring skills.</li>
+            </ul>
+          </li>
+
+          <li className="list-item">
+            <div className="role-line">
+              <strong>Data Analytics Intern</strong> — PNS Networks
+              <span className="meta">Dec 2025 – Jan 2026 · Seoul, South Korea</span>
+            </div>
+            <ul className="bullet-list stagger">
+              <li>Built a <strong>full-stack freight analytics platform</strong> using <strong>Python</strong>, <strong>Flask</strong>, <strong>React</strong>, and <strong>TypeScript</strong>, automating multi-year <strong>intermodal freight ETL pipelines</strong>, reducing manual processing by <strong>95%</strong>, enabling data-backed carrier renegotiation.</li>
+              <li>Analyzed <strong>100k+ intermodal shipment records</strong> using <strong>regression modeling</strong> to compare operational variables and identify loss drivers, developing a <strong>continuous risk-scoring model</strong> to evaluate contract risk and high-loss scenarios.</li>
+            </ul>
+          </li>
+
+          <li className="list-item">
+            <div className="role-line">
               <strong>Sergeant, Network Engineer</strong> — Republic of Korea Army
               <span className="meta">Jun 2023 – Dec 2024 · Seoul, South Korea</span>
             </div>
@@ -127,17 +157,6 @@ export default function Experience() {
               <li>Coordinated across units during field training exercises, developing effective combat signaling strategies under varied conditions.</li>
               <li>Served as the communication link between upper command and front-line units, strengthening leadership and precise message delivery.</li>
               <li><em>Awards:</em> 2nd Place, Brigade Encryption/Decryption Competition; Soldier of the Month.</li>
-            </ul>
-          </li>
-
-          <li className="list-item">
-            <div className="role-line">
-              <strong>Student Tutor</strong> — University of Wisconsin–Madison
-              <span className="meta">Jan 2025 – Present · Madison, WI</span>
-            </div>
-            <ul className="bullet-list stagger">
-              <li>Provided tutoring in Physics, Chemistry, Mathematics, and Computer Engineering, adapting explanations to individual learning styles.</li>
-              <li>Supported peers through both paid and volunteer tutoring, reinforcing subject mastery while developing communication and mentoring skills.</li>
             </ul>
           </li>
         </ul>
