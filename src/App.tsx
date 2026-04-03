@@ -4,10 +4,10 @@ import WelcomeStats from './components/WelcomeStats'
 import ProfileSection from './components/ProfileSection'
 import QuickSummary from './components/QuickSummary'
 import ReadingList from './components/ReadingList'
-import Calendar from './components/Calendar'
+import Gallery from './components/Calendar'
 import GithubHeatmap from './components/GithubHeatmap'
 import OnboardingSummary from './components/OnboardingSummary'
-import TaskList from './components/TaskList'
+import MiniCalendar from './components/TaskList'
 
 function App() {
   return (
@@ -24,10 +24,10 @@ function App() {
 
                 {/* Row 2 */}
                 <QuickSummary />
-                <Calendar />
+                <Gallery />
                 <div className="right-bottom-cards">
                     <OnboardingSummary />
-                    <TaskList />
+                    <MiniCalendar />
                 </div>
             </div>
         </div>

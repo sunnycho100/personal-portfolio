@@ -3,30 +3,9 @@
 const WelcomeStats = () => {
     return (
         <div className="welcome-section">
-            <h1>Welcome, Nixtio</h1>
             <div className="stats-header">
-                <div className="progress-labels">
-                    <div className="prog-item">
-                        <span className="prog-title">Interviews</span>
-                        <div className="pill dark-pill">15%</div>
-                    </div>
-                    <div className="prog-item">
-                        <span className="prog-title">Hired</span>
-                        <div className="pill yellow-pill">15%</div>
-                    </div>
-                    <div className="prog-item project-time-item">
-                        <span className="prog-title">Project time</span>
-                        <div className="line-progress">
-                            <span>60%</span>
-                            <div className="line-bar-bg"><div className="line-bar-fill"></div></div>
-                        </div>
-                    </div>
-                    <div className="prog-item">
-                        <span className="prog-title">Output</span>
-                        <div className="pill outline-pill">10%</div>
-                    </div>
-                </div>
-                
+                <h1>Thank you for visiting!</h1>
+
                 <div className="summary-numbers">
                     <div className="sum-item">
                         <div className="sum-icon">

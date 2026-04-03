@@ -3,6 +3,11 @@ const languages = [
   'Java', 'SQL', 'Go', 'Swift', 'MATLAB',
 ]
 
+const agenticTools = [
+  'Claude CLI', 'MCP', 'Obsidian', 'Cursor',
+  'LangChain', 'RAG',
+]
+
 const QuickSummary = () => {
   return (
     <div className="accordion-list quick-summary">
@@ -16,6 +21,17 @@ const QuickSummary = () => {
           <span className="qs-meta">
             GPA 3.93 / 4.00 · Dean's Honor List
           </span>
+        </div>
+
+        <div className="qs-divider" />
+
+        <div className="qs-row">
+          <span className="qs-label">Agentic Tools</span>
+          <div className="qs-tags">
+            {agenticTools.map((tool) => (
+              <span className="qs-tag" key={tool}>{tool}</span>
+            ))}
+          </div>
         </div>
 
         <div className="qs-divider" />

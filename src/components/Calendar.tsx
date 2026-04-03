@@ -1,63 +1,27 @@
+const galleryItems = [
+    { src: '/profile-image.jpg', label: 'Madison, WI' },
+    { src: '/books/zero-to-one.jpg', label: 'Favorite Read' },
+    { src: '/books/unstoppable.png', label: 'Inspiration' },
+    { src: '/books/technological-republic.jpg', label: 'Tech & Society' },
+];
 
-
-const Calendar = () => {
+const Gallery = () => {
     return (
-        <div className="card calendar-card">
-            <div className="calendar-header">
-                <span className="month-side">August</span>
-                <span className="month-main">September 2024</span>
-                <span className="month-side">October</span>
+        <div className="card gallery-card">
+            <div className="card-top">
+                <h3>Gallery</h3>
+                <span className="gallery-count">{galleryItems.length} photos</span>
             </div>
-            <div className="calendar-days">
-                <div className="day-col">Mon<br/>22</div>
-                <div className="day-col">Tue<br/>23</div>
-                <div className="day-col active">Wed<br/>24</div>
-                <div className="day-col">Thu<br/>25</div>
-                <div className="day-col">Fri<br/>26</div>
-                <div className="day-col">Sat<br/>27</div>
-            </div>
-            <div className="timeline">
-                <div className="time-row">
-                    <div className="time-label">8:00 am</div>
-                    <div className="event-track">
-                        <div className="event dark-event" style={{width: '60%', marginLeft: '20%'}}>
-                            <div className="event-info">
-                                <strong>Weekly Team Sync</strong>
-                                <span>Discuss progress on projects</span>
-                            </div>
-                            <div className="event-avatars">
-                                <img src="/profile-image.jpg" alt="av" />
-                                <img src="/profile-image.jpg" alt="av" />
-                            </div>
-                        </div>
+            <div className="gallery-grid">
+                {galleryItems.map((item, i) => (
+                    <div key={i} className={`gallery-item ${i === 0 ? 'gallery-featured' : ''}`}>
+                        <img src={item.src} alt={item.label} />
+                        <div className="gallery-label">{item.label}</div>
                     </div>
-                </div>
-                <div className="time-row">
-                    <div className="time-label">9:00 am</div>
-                    <div className="event-track"></div>
-                </div>
-                <div className="time-row">
-                    <div className="time-label">10:00 am</div>
-                    <div className="event-track">
-                            <div className="event light-event" style={{width: '50%', marginLeft: '40%'}}>
-                            <div className="event-info">
-                                <strong>Onboarding Session</strong>
-                                <span>Introduction for new hires</span>
-                            </div>
-                            <div className="event-avatars">
-                                <img src="/profile-image.jpg" alt="av" />
-                                <img src="/profile-image.jpg" alt="av" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="time-row">
-                    <div className="time-label">11:00 am</div>
-                    <div className="event-track"></div>
-                </div>
+                ))}
             </div>
         </div>
     );
 };
 
-export default Calendar;
+export default Gallery;

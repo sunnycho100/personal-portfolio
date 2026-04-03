@@ -4,7 +4,7 @@ const Header = () => {
     return (
         <header className="header">
             <div className="logo">
-                Crextio
+                About Me
             </div>
             <nav className="top-nav">
                 <a href="#" className="active">Dashboard</a>
