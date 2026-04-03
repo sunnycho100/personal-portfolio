@@ -813,6 +813,7 @@ body {
     display: flex;
     gap: 4px;
     margin-top: 16px;
+    justify-content: center;
 }
 
 .gh-day-labels {
@@ -838,7 +839,7 @@ body {
 
 .gh-month-labels {
     display: grid;
-    grid-template-columns: repeat(17, 1fr);
+    grid-template-columns: repeat(13, 1fr);
     height: 14px;
     margin-bottom: 4px;
 }
@@ -877,7 +878,8 @@ body {
 .gh-footer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 16px;
     margin-top: 14px;
 }
 
@@ -958,6 +960,60 @@ body {
 @keyframes gh-shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+}
+
+.gh-projects {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.gh-project {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--surface-1);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.gh-project:hover {
+    background: var(--surface-3);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.gh-project-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+}
+
+.gh-project-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.gh-project-tech {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.gh-project-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
 }
 
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 const GITHUB_USERNAME = 'sunnycho100';
-const DISPLAY_WEEKS = 17;
+const DISPLAY_WEEKS = 13;
 
 interface ContributionDay {
     date: string;
@@ -43,9 +43,15 @@ const GithubHeatmap = () => {
     const [tooltip, setTooltip] = useState<{ day: ContributionDay; x: number; y: number } | null>(null);
 
     const buildFromGraphQL = useCallback(async (token: string): Promise<boolean> => {
-        const query = `query($username: String!) {
+        const today = new Date();
+        const from = new Date(today);
+        from.setDate(from.getDate() - (DISPLAY_WEEKS + 1) * 7);
+        const fromISO = from.toISOString();
+        const toISO = today.toISOString();
+
+        const query = `query($username: String!, $from: DateTime!, $to: DateTime!) {
             user(login: $username) {
-                contributionsCollection {
+                contributionsCollection(from: $from, to: $to) {
                     contributionCalendar {
                         totalContributions
                         weeks {
@@ -66,7 +72,10 @@ const GithubHeatmap = () => {
                     Authorization: `bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query, variables: { username: GITHUB_USERNAME } }),
+                body: JSON.stringify({
+                    query,
+                    variables: { username: GITHUB_USERNAME, from: fromISO, to: toISO },
+                }),
             });
 
             const data = await res.json();
@@ -285,6 +294,25 @@ const GithubHeatmap = () => {
                             <span>{formatDisplayDate(tooltip.day.date)}</span>
                         </div>
                     )}
+
+                    <div className="gh-projects">
+                        <a href={`https://github.com/${GITHUB_USERNAME}/ai-hub`} target="_blank" rel="noopener noreferrer" className="gh-project">
+                            <div className="gh-project-header">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9z"/><path d="M2 1.5v9c0 .863.403 1.633 1.03 2.129A2.25 2.25 0 014.5 11h8V1.5H4.5A1 1 0 003.5 2.5v.75a.75.75 0 01-1.5 0V2.5z"/></svg>
+                                <span className="gh-project-name">AI-Hub</span>
+                                <span className="gh-project-tech">TypeScript, FastAPI, React</span>
+                            </div>
+                            <p className="gh-project-desc">Multi-agent AI platform for student collaboration, information verification, and structured writing.</p>
+                        </a>
+                        <a href={`https://github.com/${GITHUB_USERNAME}/MFT-cashcow`} target="_blank" rel="noopener noreferrer" className="gh-project">
+                            <div className="gh-project-header">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9z"/><path d="M2 1.5v9c0 .863.403 1.633 1.03 2.129A2.25 2.25 0 014.5 11h8V1.5H4.5A1 1 0 003.5 2.5v.75a.75.75 0 01-1.5 0V2.5z"/></svg>
+                                <span className="gh-project-name">MFT-CashCow</span>
+                                <span className="gh-project-tech">Python, OpenClaw</span>
+                            </div>
+                            <p className="gh-project-desc">Mid-frequency trading model built with OpenClaw for quantitative market strategies.</p>
+                        </a>
+                    </div>
                 </>
             )}
         </div>
