@@ -2,9 +2,10 @@
 import Header from './components/Header'
 import WelcomeStats from './components/WelcomeStats'
 import ProfileSection from './components/ProfileSection'
-import ProgressChart from './components/ProgressChart'
+import QuickSummary from './components/QuickSummary'
+import ReadingList from './components/ReadingList'
 import Calendar from './components/Calendar'
-import TimeTracker from './components/TimeTracker'
+import GithubHeatmap from './components/GithubHeatmap'
 import OnboardingSummary from './components/OnboardingSummary'
 import TaskList from './components/TaskList'
 
@@ -16,18 +17,16 @@ function App() {
             <WelcomeStats />
 
             <div className="main-grid">
+                {/* Row 1 */}
                 <ProfileSection />
-                
-                <div className="col-mid">
-                    <ProgressChart />
-                    <Calendar />
-                </div>
-                
-                <div className="col-right">
-                    <div className="right-top-cards">
-                        <TimeTracker />
-                        <OnboardingSummary />
-                    </div>
+                <ReadingList />
+                <GithubHeatmap />
+
+                {/* Row 2 */}
+                <QuickSummary />
+                <Calendar />
+                <div className="right-bottom-cards">
+                    <OnboardingSummary />
                     <TaskList />
                 </div>
             </div>

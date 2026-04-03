@@ -26,8 +26,8 @@ const Calendar = () => {
                                 <span>Discuss progress on projects</span>
                             </div>
                             <div className="event-avatars">
-                                <img src="/profile.png" alt="av" />
-                                <img src="/profile.png" alt="av" />
+                                <img src="/profile-image.jpg" alt="av" />
+                                <img src="/profile-image.jpg" alt="av" />
                             </div>
                         </div>
                     </div>
@@ -45,8 +45,8 @@ const Calendar = () => {
                                 <span>Introduction for new hires</span>
                             </div>
                             <div className="event-avatars">
-                                <img src="/profile.png" alt="av" />
-                                <img src="/profile.png" alt="av" />
+                                <img src="/profile-image.jpg" alt="av" />
+                                <img src="/profile-image.jpg" alt="av" />
                             </div>
                         </div>
                     </div>
