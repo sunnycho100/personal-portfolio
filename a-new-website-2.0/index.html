@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunghwan Cho | Engineer</title>
+  <meta name="description" content="Sunghwan Cho - Computer Engineer & Software Developer at UW-Madison">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div id="preloader" aria-hidden="true">
+    <div class="preloader-inner">
+      <div class="preloader-counter">
+        <span id="preloader-number">0</span>
+      </div>
+      <div class="preloader-bar">
+        <div class="preloader-bar-fill" id="preloader-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <a href="#hero" class="nav-logo">SC</a>
+    <div class="nav-links">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#experience" class="nav-link">Work</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-overline reveal-up">
+          <span class="dot"></span>
+          <span>Computer Engineer & Software Developer</span>
+        </div>
+        <h1 class="hero-name">
+          <span class="hero-name-line reveal-up" data-delay="1">SUNGHWAN</span>
+          <span class="hero-name-line reveal-up" data-delay="2">CHO</span>
+        </h1>
+        <div class="hero-meta reveal-up" data-delay="3">
+          <span>UW-Madison</span>
+          <span class="separator">/</span>
+          <span>Madison, WI</span>
+        </div>
+      </div>
+      <div class="hero-globe reveal-up" data-delay="2">
+        <canvas id="globe-canvas"></canvas>
+      </div>
+    </div>
+    <div class="hero-time reveal-up" data-delay="4">
+      <span id="hero-time"></span>
+      <span class="hero-time-label">Local Time</span>
+    </div>
+    <div class="hero-scroll reveal-up" data-delay="4">
+      <div class="hero-scroll-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- Ticker -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <div class="ticker-content">
+        <span>Computer Engineer</span>
+        <span class="ticker-dot"></span>
+        <span>Software Developer</span>
+        <span class="ticker-dot"></span>
+        <span>CV Researcher</span>
+        <span class="ticker-dot"></span>
+        <span>Full-Stack Builder</span>
+        <span class="ticker-dot"></span>
+        <span>Systems Thinker</span>
+        <span class="ticker-dot"></span>
+      </div>
+      <div class="ticker-content" aria-hidden="true">
+        <span>Computer Engineer</span>
+        <span class="ticker-dot"></span>
+        <span>Software Developer</span>
+        <span class="ticker-dot"></span>
+        <span>CV Researcher</span>
+        <span class="ticker-dot"></span>
+        <span>Full-Stack Builder</span>
+        <span class="ticker-dot"></span>
+        <span>Systems Thinker</span>
+        <span class="ticker-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="section" id="about">
+    <div class="section-grid">
+      <div class="section-label reveal-up">
+        <span class="section-number">01</span>
+        <span class="section-title">About</span>
+      </div>
+      <div class="section-content">
+        <p class="about-text reveal-up">
+          I build systems at the intersection of hardware and software. As a Computer Engineering &amp; Computer Science student at UW-Madison, I bring precision from digital design and creativity from full-stack development to every problem I tackle.
+        </p>
+        <p class="about-text reveal-up">
+          From training 3D object detection models for autonomous vehicles to architecting enterprise digital transformation strategies at Deloitte — I operate across the entire technical stack.
+        </p>
+        <div class="about-stats reveal-up">
+          <div class="stat">
+            <span class="stat-number" data-target="3.93">0</span>
+            <span class="stat-label">GPA</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-target="3">0</span>
+            <span class="stat-label">Internships</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-target="11">0</span>
+            <span class="stat-label">Languages</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number" data-target="2027">0</span>
+            <span class="stat-label">Graduation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section class="section section--dark" id="experience">
+    <div class="section-grid">
+      <div class="section-label reveal-up">
+        <span class="section-number">02</span>
+        <span class="section-title">Experience</span>
+      </div>
+      <div class="section-content">
+
+        <article class="exp-item reveal-up">
+          <div class="exp-header">
+            <div>
+              <h3 class="exp-role">Computer Vision Research Intern</h3>
+              <p class="exp-company">Connected & Autonomous Transportation Systems Lab</p>
+            </div>
+            <time class="exp-date">Sept 2025 — Present</time>
+          </div>
+          <ul class="exp-details">
+            <li>Multi-camera 3D object detection pipelines with PyTorch & MMDetection3D</li>
+            <li>End-to-end training & evaluation across DAIR-V2X domains with BEV/3D detection</li>
+            <li>Camera calibration pipeline achieving &lt;5% focal length error on roadside imagery</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="tag">Python</span>
+            <span class="tag">PyTorch</span>
+            <span class="tag">OpenCV</span>
+            <span class="tag">3D Detection</span>
+          </div>
+        </article>
+
+        <article class="exp-item reveal-up">
+          <div class="exp-header">
+            <div>
+              <h3 class="exp-role">Software Engineer Intern</h3>
+              <p class="exp-company">PNS Networks — Seoul, South Korea</p>
+            </div>
+            <time class="exp-date">Dec 2025 — Jan 2026</time>
+          </div>
+          <ul class="exp-details">
+            <li>Full-stack freight analytics platform with Flask, React & TypeScript</li>
+            <li>Automated multi-year intermodal freight ETL — reduced manual processing by 95%</li>
+            <li>Regression modeling on 100k+ shipment records for risk scoring</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="tag">React</span>
+            <span class="tag">Flask</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Data Analysis</span>
+          </div>
+        </article>
+
+        <article class="exp-item reveal-up">
+          <div class="exp-header">
+            <div>
+              <h3 class="exp-role">Technology Strategy & Transformation Intern</h3>
+              <p class="exp-company">Deloitte — Seoul, South Korea</p>
+            </div>
+            <time class="exp-date">June 2025 — Aug 2025</time>
+          </div>
+          <ul class="exp-details">
+            <li>Digital transformation of a $50B financial institution using TOGAF framework</li>
+            <li>Assessed AI-OCR, blockchain & eForm solutions through cross-industry benchmarking</li>
+            <li>Designed inter-application integrations for Java-based reference architecture</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="tag">TOGAF</span>
+            <span class="tag">Enterprise Architecture</span>
+            <span class="tag">Strategy</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="section" id="projects">
+    <div class="section-grid">
+      <div class="section-label reveal-up">
+        <span class="section-number">03</span>
+        <span class="section-title">Projects</span>
+      </div>
+      <div class="section-content">
+
+        <a class="project-card reveal-up" href="https://github.com/sunnycho100" target="_blank" rel="noopener">
+          <div class="project-card-top">
+            <span class="project-number">01</span>
+            <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17"/>
+            </svg>
+          </div>
+          <h3 class="project-name">AI-Agent Productivity Platform</h3>
+          <p class="project-desc">Multi-LLM debate system that collaboratively verifies responses to reduce hallucination. Multimodal ingestion with PDF parsing, OCR, and vision grounding.</p>
+          <div class="exp-tags">
+            <span class="tag">Next.js</span>
+            <span class="tag">Spring Boot</span>
+            <span class="tag">FastAPI</span>
+            <span class="tag">PostgreSQL</span>
+          </div>
+        </a>
+
+        <a class="project-card reveal-up" href="#" target="_blank" rel="noopener">
+          <div class="project-card-top">
+            <span class="project-number">02</span>
+            <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17"/>
+            </svg>
+          </div>
+          <h3 class="project-name">Bacterial Imaging UI</h3>
+          <p class="project-desc">Real-time imaging interface for antimicrobial susceptibility testing. Multi-tab UI with automated storage and high-throughput screening for 55+ droplets per slide.</p>
+          <div class="exp-tags">
+            <span class="tag">Python</span>
+            <span class="tag">OpenCV</span>
+            <span class="tag">Tkinter</span>
+            <span class="tag">Raspberry Pi</span>
+          </div>
+        </a>
+
+        <a class="project-card reveal-up" href="https://github.com/sunnycho100" target="_blank" rel="noopener">
+          <div class="project-card-top">
+            <span class="project-number">03</span>
+            <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17"/>
+            </svg>
+          </div>
+          <h3 class="project-name">Segway Self-Balancing Controller</h3>
+          <p class="project-desc">FPGA-based real-time control SoC with PID control, gyro/accelerometer fusion, and multi-protocol sensor interfaces. Timing closure at 333 MHz.</p>
+          <div class="exp-tags">
+            <span class="tag">SystemVerilog</span>
+            <span class="tag">SAED 32nm</span>
+            <span class="tag">Synopsys DC</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section class="section section--dark" id="skills">
+    <div class="section-grid">
+      <div class="section-label reveal-up">
+        <span class="section-number">04</span>
+        <span class="section-title">Skills</span>
+      </div>
+      <div class="section-content">
+
+        <div class="skill-group reveal-up">
+          <h3 class="skill-group-title">Languages</h3>
+          <div class="skill-list">
+            <span class="skill-item">SystemVerilog</span>
+            <span class="skill-item">C</span>
+            <span class="skill-item">C++</span>
+            <span class="skill-item">Assembly</span>
+            <span class="skill-item">Java</span>
+            <span class="skill-item">Python</span>
+            <span class="skill-item">TypeScript</span>
+            <span class="skill-item">SQL</span>
+            <span class="skill-item">Go</span>
+            <span class="skill-item">Swift</span>
+            <span class="skill-item">MATLAB</span>
+          </div>
+        </div>
+
+        <div class="skill-group reveal-up">
+          <h3 class="skill-group-title">Frameworks & Libraries</h3>
+          <div class="skill-list">
+            <span class="skill-item">Next.js</span>
+            <span class="skill-item">React</span>
+            <span class="skill-item">Spring Boot</span>
+            <span class="skill-item">FastAPI</span>
+            <span class="skill-item">PyTorch</span>
+            <span class="skill-item">OpenCV</span>
+            <span class="skill-item">TanStack Query</span>
+          </div>
+        </div>
+
+        <div class="skill-group reveal-up">
+          <h3 class="skill-group-title">Systems & Tools</h3>
+          <div class="skill-list">
+            <span class="skill-item">PostgreSQL</span>
+            <span class="skill-item">WebSockets</span>
+            <span class="skill-item">REST APIs</span>
+            <span class="skill-item">RAG</span>
+            <span class="skill-item">Linux</span>
+            <span class="skill-item">Docker</span>
+            <span class="skill-item">Git</span>
+            <span class="skill-item">Synopsys DC</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section section--contact" id="contact">
+    <div class="contact-inner">
+      <div class="section-label reveal-up">
+        <span class="section-number">05</span>
+        <span class="section-title">Contact</span>
+      </div>
+      <h2 class="contact-heading reveal-up">Let's build<br>something together.</h2>
+      <a href="mailto:shcho1551@gmail.com" class="contact-email reveal-up magnetic">shcho1551@gmail.com</a>
+      <div class="contact-links reveal-up">
+        <a href="https://linkedin.com/in/chosunghwan" target="_blank" rel="noopener" class="contact-link magnetic">LinkedIn</a>
+        <a href="https://github.com/sunnycho100" target="_blank" rel="noopener" class="contact-link magnetic">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 Sunghwan Cho</span>
+      <span>Designed with precision.</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
