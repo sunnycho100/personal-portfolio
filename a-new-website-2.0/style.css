@@ -154,43 +154,68 @@ body::after {
   inset: 0;
   z-index: 9998;
   background: var(--black);
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding: var(--space-2xl);
-  transition: transform 1s var(--ease-in-out);
+  transition: transform 0.9s var(--ease-in-out);
 }
 
 #preloader.done {
   transform: translateY(-100%);
 }
 
-.preloader-inner {
+.preloader-books {
+  position: relative;
   width: 100%;
-}
-
-.preloader-counter {
-  font-size: clamp(48px, 15vw, 200px);
-  font-weight: 900;
-  color: var(--white);
-  line-height: 1;
-  letter-spacing: -0.04em;
-  margin-bottom: var(--space-lg);
-  font-variant-numeric: tabular-nums;
-}
-
-.preloader-bar {
-  width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  height: 100%;
   overflow: hidden;
 }
 
-.preloader-bar-fill {
-  width: 0%;
+#preloader-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  background: var(--red);
-  transition: width 0.05s linear;
+  pointer-events: none;
+}
+
+.book {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.book.visible {
+  opacity: 1;
+}
+
+.book.fade-out {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.book:nth-child(2) .book-name { font-size: clamp(22px, 3.2vw, 32px); }
+.book:nth-child(3) .book-name { font-size: clamp(16px, 2.2vw, 22px); }
+.book:nth-child(4) .book-name { font-size: clamp(18px, 2.5vw, 26px); }
+.book:nth-child(5) .book-name { font-size: clamp(16px, 2.1vw, 22px); }
+.book:nth-child(6) .book-name { font-size: clamp(20px, 2.8vw, 28px); }
+.book:nth-child(7) .book-name { font-size: clamp(17px, 2.3vw, 24px); }
+.book:nth-child(8) .book-name { font-size: clamp(21px, 2.8vw, 28px); }
+.book:nth-child(9) .book-name { font-size: clamp(17px, 2.2vw, 22px); }
+
+.book-name {
+  font-weight: 700;
+  color: var(--white);
+  display: block;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.book-author {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--gray-400);
+  display: block;
+  margin-top: 6px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 /* ---- Navigation ---- */
@@ -561,7 +586,7 @@ body::after {
 
 .about-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-xl);
   margin-top: var(--space-3xl);
   padding-top: var(--space-3xl);

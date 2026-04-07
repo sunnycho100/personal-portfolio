@@ -2,35 +2,116 @@
   'use strict';
 
   // ──────────────────────────────────────────
-  // Preloader
+  // Preloader - Book Network
   // ──────────────────────────────────────────
   const preloader = document.getElementById('preloader');
-  const preloaderNumber = document.getElementById('preloader-number');
-  const preloaderFill = document.getElementById('preloader-fill');
-  let count = 0;
-
-  function animatePreloader() {
-    preloaderNumber.textContent = count;
-    preloaderFill.style.width = count + '%';
-
-    if (count >= 100) {
-      setTimeout(() => {
-        preloader.classList.add('done');
-        document.body.style.overflow = '';
-        revealHero();
-        setTimeout(() => { preloader.style.display = 'none'; }, 1200);
-      }, 400);
-      return;
-    }
-
-    count += Math.floor(Math.random() * 4) + 1;
-    if (count > 100) count = 100;
-    requestAnimationFrame(() => setTimeout(animatePreloader, 18));
-  }
+  const books = document.querySelectorAll('.book');
+  const lineCanvas = document.getElementById('preloader-lines');
+  var lineCtx = lineCanvas ? lineCanvas.getContext('2d') : null;
 
   document.body.style.overflow = 'hidden';
-  window.addEventListener('load', () => {
-    animatePreloader();
+
+  function sizeLineCanvas() {
+    if (!lineCanvas) return;
+    var dpr = window.devicePixelRatio || 1;
+    lineCanvas.width = window.innerWidth * dpr;
+    lineCanvas.height = window.innerHeight * dpr;
+    lineCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function getBookCenter(el) {
+    var r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
+
+  function drawNetwork(progress) {
+    if (!lineCtx) return;
+    lineCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    var centers = [];
+    books.forEach(function (b) { centers.push(getBookCenter(b)); });
+
+    var pairs = [[0, 1], [1, 7], [7, 2], [2, 6], [6, 4], [4, 3], [3, 5], [5, 0]];
+    pairs.forEach(function (pair, i) {
+      var seg = 1 / pairs.length;
+      var start = i * seg;
+      var p = Math.max(0, Math.min(1, (progress - start) / seg));
+      if (p <= 0) return;
+
+      var a = centers[pair[0]];
+      var b = centers[pair[1]];
+      var ex = a.x + (b.x - a.x) * p;
+      var ey = a.y + (b.y - a.y) * p;
+
+      lineCtx.beginPath();
+      lineCtx.moveTo(a.x, a.y);
+      lineCtx.lineTo(ex, ey);
+      lineCtx.strokeStyle = 'rgba(255,0,0,0.45)';
+      lineCtx.lineWidth = 1.5;
+      lineCtx.stroke();
+    });
+
+    centers.forEach(function (c, i) {
+      if (i === 0 || progress > (i - 1) / pairs.length) {
+        lineCtx.beginPath();
+        lineCtx.arc(c.x, c.y, 3, 0, Math.PI * 2);
+        lineCtx.fillStyle = 'rgba(255,0,0,0.65)';
+        lineCtx.fill();
+      }
+    });
+  }
+
+  window.addEventListener('load', function () {
+    sizeLineCanvas();
+
+    var delays = [];
+    var cumulative = 200;
+    var gap = 550;
+    var decay = 0.72;
+    for (var i = 0; i < books.length; i++) {
+      delays.push(cumulative);
+      cumulative += Math.round(gap);
+      gap *= decay;
+    }
+    var allVisibleAt = cumulative;
+
+    books.forEach(function (book, i) {
+      setTimeout(function () { book.classList.add('visible'); }, delays[i]);
+    });
+
+    setTimeout(function () {
+      var lineStart = performance.now();
+      var lineDuration = 1100;
+
+      function animateLines(now) {
+        var p = Math.min(1, (now - lineStart) / lineDuration);
+        drawNetwork(p);
+        if (p < 1) requestAnimationFrame(animateLines);
+      }
+      requestAnimationFrame(animateLines);
+    }, allVisibleAt + 150);
+
+    setTimeout(function () {
+      books.forEach(function (b) { b.classList.add('fade-out'); });
+      var fadeLine = performance.now();
+      var fadeDur = 600;
+
+      function fadeLines(now) {
+        var p = 1 - Math.min(1, (now - fadeLine) / fadeDur);
+        lineCtx.globalAlpha = p;
+        drawNetwork(1);
+        lineCtx.globalAlpha = 1;
+        if (p > 0) requestAnimationFrame(fadeLines);
+      }
+      requestAnimationFrame(fadeLines);
+    }, allVisibleAt + 1600);
+
+    setTimeout(function () {
+      preloader.classList.add('done');
+      document.body.style.overflow = '';
+      revealHero();
+      setTimeout(function () { preloader.style.display = 'none'; }, 1000);
+    }, allVisibleAt + 2300);
   });
 
   // ──────────────────────────────────────────
