@@ -14,7 +14,8 @@
 | GitHub | sunnycho100 (https://github.com/sunnycho100) |
 | Location | Madison, WI |
 
-## Preloader — Books
+## Hobbies — Reading
+(Previously shown as a "preloader" book animation; now just a hobbies/reading list.)
 - Zero To One — Peter Thiel
 - The Technological Republic — Alex Karp
 - The Millionaire Fastlane — M. J. DeMarco
@@ -39,11 +40,11 @@ Computer Engineer · Software Developer · CV Researcher · Full-Stack Builder �
 ## Education
 **University of Wisconsin–Madison**
 B.S. Computer Engineering & Computer Science
-GPA: 3.93 / 4.00 · Dean's Honor List (all semesters)
-Degree period: Sep 2022 – May 2027
+GPA: 3.90 / 4.00 · Dean's Honor List (all semesters)
+Degree period: Sep 2022 – May 2027 · Madison, WI
 
 **Teaching**
-Undergraduate TA, ECE 352: Digital System Fundamentals (SystemVerilog)
+Undergraduate TA, ECE 352: Digital System Fundamentals (SystemVerilog) — 2025 – Present
 
 ## 01 — About
 I build systems at the intersection of hardware and software. As a Computer Engineering & Computer Science student at UW-Madison, I bring precision from digital design and creativity from full-stack development to every problem I tackle.
@@ -51,52 +52,51 @@ I build systems at the intersection of hardware and software. As a Computer Engi
 From training 3D object detection models for autonomous vehicles to architecting enterprise digital transformation strategies at Deloitte, I operate across the entire technical stack.
 
 Stats:
-- 3 — Internships
+- 4 — Internships
 - 11 — Languages
 - 2027 — Graduation
 
 ## 02 — Experience
+Degree/experience period: Sep 2022 – May 2027 · Madison, WI
 
-### Computer Vision / Robotics Research Intern
-Connected & Autonomous Transportation Systems Lab (Prof. Xiaopeng Li), Madison, WI | Sept 2025 - Present
-- Implemented multi-camera 3D object detection pipelines in Python using PyTorch and MMDetection3D for real-time perception research for autonomous driving on DAIR-V2X, KITTI, and related datasets.
-- Performed evaluation and benchmarking of BEV-based perception models via training, inference, and detection metrics for roadside-infrastructure scenarios.
-- Camera calibration pipeline achieving <5% focal length error on roadside imagery.
+### Computer Vision Research Intern
+Connected & Autonomous Transportation Systems Lab (Prof. Xiaopeng Li), Madison, WI | Sept 2025 – Present
+- Designed a vision-based roadside perception pipeline to classify autonomous and human-driven vehicles from 3D vehicle trajectories, targeting a real-world benchmark for infrastructure-based autonomy detection.
+- Developed a single-view camera calibration pipeline in Python using PyTorch and OpenCV, combining deep-learning intrinsic estimation with lane-based extrinsic refinement to achieve <5% focal length error.
+- Built a roadside 3D detection pipeline on DAIR-V2X, converting annotations to KITTI format and reaching ~80% 3D AP on vehicles in-domain, then quantifying domain-shift degradation across 3 sensor perspectives.
 Tags: Python, PyTorch, OpenCV, 3D Detection
 
 ### Software Engineer Intern
-PNS Networks, Seoul, South Korea | Dec 2025 - Jan 2026
-- Built a full-stack freight analytics platform (Python, Flask, React, TypeScript), automating multi-year intermodal freight ETL; reduced manual processing by ~95% and supported data-backed carrier renegotiation.
-- Analyzed 100k+ intermodal shipment records with regression modeling to compare operational variables and loss drivers; developed a continuous risk-scoring model for contract risk and high-loss scenarios.
+Contoro Robotics, FeverCoach | Remote | Feb 2026 – Present
+- Drove RobotMCP growth strategy to lift sign-up conversion, translating AI-to-robot connector value props into landing-page messaging, Google Ads, and AWS-hosted live demos, with GA4 tracking user interaction.
+- Managed a 6-person team building multi-pipeline AI video automation (LLM scripting, Vertex AI/Veo, TTS, FFmpeg, auto-publishing), reducing content production time ~80% through workflow automation.
+Tags: Growth, GA4, Google Ads, AWS, Team Lead
+
+### Software Engineer Intern
+PNS Networks, Seoul, South Korea | Dec 2025 – Jan 2026
+- Built a full-stack freight analytics platform using Python, Flask, React, and TypeScript, automating multi-year intermodal freight ETL pipelines, reducing manual processing by 95%, enabling data-backed carrier renegotiation.
+- Analyzed 100k+ intermodal shipment records using regression modeling to compare operational variables and identify loss drivers, developing a continuous risk-scoring model to evaluate contract risk and high-loss scenarios.
 Tags: React, Flask, TypeScript, Data Analysis
 
 ### Technology Strategy & Transformation Intern
-Deloitte, Seoul, South Korea | June 2025 - Aug 2025
-- Helped initiate digital transformation for a large ($50B) financial institution using the TOGAF framework to build a modernization roadmap focused on operational and workflow efficiency.
-- Assessed AI-OCR, blockchain, and eForm solutions via cross-industry benchmarking and requirements analysis, with KPI-based scoring and cost–benefit analysis.
-- Partnered with stakeholders on a reference architecture: analyzed Java-based applications and designed inter-application integrations to streamline workflows.
+Deloitte, Seoul, South Korea | June 2025 – Aug 2025
+- Initiated the digital transformation of a $50B financial institution using the TOGAF enterprise architecture framework, developing a modernization roadmap to improve operational & workflow efficiency across systems.
+- Assessed AI-OCR, blockchain, and eForm solutions through cross-industry benchmarking and requirements analysis, and defined a reference architecture by analyzing Java-based applications, designing inter-application integrations.
 Tags: TOGAF, Enterprise Architecture, Strategy
 
 ## 03 — Projects
 
-### 01 — AI-Agent Productivity Platform
-Stack: Next.js, TypeScript, Spring Boot, FastAPI, PostgreSQL · Jan 2026 – Present · GitHub: https://github.com/sunnycho100
-- Full-stack AI system for multi-model agents, multimodal document processing, and content verification.
-- Multi-LLM debate system that collaboratively verifies responses to reduce hallucination.
-- Multimodal ingestion: PDF parsing, OCR, layout-aware chunking, vision grounding (GPT-4o / Gemini Vision).
-- Backend AI workflows separating product services from AI execution; agent debate, search-and-verify pipelines; structured runs with PostgreSQL (JSONB).
+### 01 — Visual Research Paper Discovery Platform
+Stack: React, TypeScript, Express, Gemini · Apr 2026 – Present · GitHub
+- Built a research exploration tool generating literature-grounded knowledge graphs from 200M+ works via OpenAlex and Semantic Scholar APIs, using Gemini to organize topics into expandable trees.
 
-### 02 — Bacterial Imaging UI for ELR-Based AST
-Stack: Python, OpenCV, Tkinter, Raspberry Pi (Picamera2) · Nov 2025 – Present
-- Real-time imaging interface for antimicrobial susceptibility testing (AST).
-- Imaging interface for real-time capture, preview, and automated storage of sessile droplet images for phenotypic AST.
-- Multi-tab UI with rendering, scaling, and slide-level image management; high-throughput screening for up to 55 droplets per slide.
+### 02 — AI-Agent Productivity Platform
+Stack: Next.js, TypeScript, Spring Boot, FastAPI · Jan 2026 – Present · GitHub: https://github.com/sunnycho100
+- Built a microservice platform where LLM agents collaboratively debate to reduce hallucination, with a multimodal ingestion pipeline (PDF parsing, OCR, layout-aware chunking, GPT-4o) and PostgreSQL run tracking.
 
 ### 03 — Segway Self-Balancing Controller
-Stack: SystemVerilog, SAED 32nm, Synopsys DC · Aug 2025 – Jan 2026 · GitHub: https://github.com/sunnycho100
-- FPGA-based real-time control SoC: PID control, gyro/accelerometer fusion, SPI/UART/A2D, PWM motor drive.
-- Multi-protocol sensor interfaces.
-- Timing closure at 333 MHz via pipelining and synthesis constraints (Synopsys Design Compiler, SAED 32nm), including post-synthesis timing analysis.
+Stack: SystemVerilog, SAED 32nm · Aug 2025 – Jan 2026 · GitHub: https://github.com/sunnycho100
+- Built an FPGA control SoC with PID and multi-sensor fusion (gyro/accel via SPI, UART, A2D, PWM), achieving timing closure at 333 MHz via pipelined datapaths and Synopsys synthesis on SAED 32nm.
 
 ## 04 — Technical Skills
 
