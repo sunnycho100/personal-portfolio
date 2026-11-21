@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunghwan Cho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* sampled from the hero photo */
+    --wall: #FBFAF7;
+    --board: #FBFAF7;
+    --ink: #1F2526;
+    --body: #3F4647;
+    --muted: #5B6162;
+    --line: #E6E3DC;
+    --soft: #F3F1EC;
+    --accent: #6B2A30;    /* the sweater */
+    --turf: #566434;
+    --hoist: #F0A05A;
+    --cream: #F3EFE4;
+    --serif: "Source Serif 4", Georgia, serif;
+    --sans: "Source Sans 3", -apple-system, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--board); color: var(--body); font-family: var(--serif); font-size: clamp(18px, 1.25vw, 27px); line-height: 1.75; }
+  ::selection { background: #F0C89A; color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  a { color: var(--ink); text-decoration: underline; text-decoration-color: #B9B2A2; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:hover { text-decoration-color: var(--ink); }
+  p { text-wrap: pretty; }
+  .wrap { max-width: clamp(1200px, 83.333vw, 1800px); margin: 0 auto; padding: 0 clamp(48px, 3.333vw, 72px); }
+
+  /* hero: pinned while the photo zooms, blurs and dissolves into the page */
+  .hero { --p: 0; height: 220vh; position: relative;
+    --m: clamp(0, calc((var(--p) - 0.4) / 0.5), 1);   /* wall -> board */
+    --f: clamp(0, calc((var(--p) - 0.45) / 0.5), 1);   /* photo fade */
+    --c: clamp(0, calc((var(--p) - 0.04) / 0.2), 1); } /* copy fade */
+  .hero-sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; grid-template-columns: 1fr min(78vh, 52vw);
+    background: color-mix(in oklab, var(--board) calc(var(--m) * 100%), var(--wall)); }
+  #dots { position: absolute; inset: 0; width: 100%; height: 100%; opacity: calc(1 - var(--m)); }
+  .hero-copy { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; color: var(--body);
+    padding: clamp(96px, 6.667vw, 144px) clamp(56px, 3.889vw, 84px) clamp(64px, 4.444vw, 96px) max(48px, calc((100vw - clamp(1200px, 83.333vw, 1800px)) / 2 + clamp(48px, 3.333vw, 72px)));
+    opacity: calc(1 - var(--c)); transform: translateY(calc(var(--p) * -70px)); }
+  .hero-copy > * { max-width: clamp(540px, 37.5vw, 810px); }
+  nav { position: absolute; top: clamp(28px, 1.944vw, 42px); left: max(48px, calc((100vw - clamp(1200px, 83.333vw, 1800px)) / 2 + clamp(48px, 3.333vw, 72px))); right: clamp(24px, 1.667vw, 36px); display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(6px, 0.417vw, 9px) clamp(22px, 1.528vw, 33px);
+    font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); letter-spacing: .12em; text-transform: uppercase; }
+  nav a { text-decoration: none; color: var(--muted); }
+  nav a:hover { color: var(--ink); }
+  nav .name { color: var(--ink); font-weight: 600; margin-right: clamp(4px, 0.278vw, 6px); white-space: nowrap; }
+  .hero h1 { font-weight: 400; font-size: clamp(32px, 3.3vw, clamp(50px, 3.472vw, 75px)); line-height: 1.2; color: var(--ink); margin-bottom: clamp(28px, 1.944vw, 42px); text-wrap: balance; }
+  .hero p { margin-bottom: clamp(20px, 1.389vw, 30px); font-size: clamp(17px, 1.181vw, 25.5px); line-height: 1.7; }
+  .hero-photo { position: relative; z-index: 1; overflow: hidden; opacity: calc(1 - var(--f));
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 28%); mask-image: linear-gradient(to right, transparent, #000 28%); }
+  .hero-photo img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 100%; transform-origin: 50% 62%;
+    transform: scale(calc(1 + var(--p) * 0.3)); filter: blur(calc(var(--p) * 14px)); will-change: transform, filter; }
+
+  .pills { display: flex; flex-wrap: wrap; gap: clamp(10px, 0.694vw, 15px); font-family: var(--sans); font-size: clamp(14px, 0.972vw, 21px); }
+  .pill { border: 1px solid var(--line); border-radius: 8px; padding: clamp(6px, 0.417vw, 9px) clamp(15px, 1.042vw, 22.5px); color: var(--ink); text-decoration: none; background: transparent; }
+  a.pill:hover { border-color: #B9B2A2; background: var(--soft); }
+  .pill.soon { color: var(--muted); border-style: dashed; cursor: default; }
+  .hero .pill { border-color: #CFCAC0; margin-top: clamp(6px, 0.417vw, 9px); }
+
+  main { position: relative; z-index: 2; margin-top: -88vh; background: var(--board); }
+  main::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 18vh; background: linear-gradient(to bottom, transparent, var(--board)); pointer-events: none; }
+
+  /* stage: the dotted mini-me and K1 live in a right gutter beside the content */
+  #stage { position: fixed; left: 0; top: 0; z-index: 5; pointer-events: none; display: flex; align-items: flex-end; gap: clamp(22px, 1.528vw, 33px);
+    opacity: 0; transition: opacity .5s ease-out; will-change: transform; }
+  #stage.on { opacity: 1; }
+  #stage img { height: clamp(132px, 9.167vw, 198px); width: auto; display: block; transform-origin: 50% 100%; animation: sway 4.4s ease-in-out infinite; }
+  #stage .k1 { height: clamp(150px, 10.417vw, 225px); animation-duration: 5.2s; animation-delay: -1.7s; }
+  @keyframes sway { 0%, 100% { transform: rotate(-1.3deg); } 50% { transform: rotate(1.3deg) translateY(-2px); } }
+  @media (min-width: 1100px) { main > .wrap > section { padding-right: clamp(210px, 14.583vw, 315px); } }
+
+  /* sections */
+  section { padding: clamp(104px, 7.222vw, 156px) 0 0; }
+  section:first-child { padding-top: clamp(24px, 1.667vw, 36px); }
+  h2 { font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); margin-bottom: clamp(32px, 2.222vw, 48px); }
+
+  /* publications */
+  .pub { display: grid; grid-template-columns: clamp(200px, 13.889vw, 300px) 1fr; gap: clamp(28px, 1.944vw, 42px); padding: clamp(28px, 1.944vw, 42px) 0; border-top: 1px solid var(--line); }
+  .pub .thumb { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 4px; background: var(--soft);
+    display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); color: var(--muted); text-align: center; padding: clamp(8px, 0.556vw, 12px); overflow: hidden; }
+  .pub .thumb img { width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
+  .pub.wide { grid-template-columns: 1fr; gap: clamp(18px, 1.25vw, 27px); }
+  .pub .fig { margin: 0; }
+  .pub .fig img { width: 100%; display: block; mix-blend-mode: multiply; }
+  .pub .thumb.clip { padding: 0; }
+  .pub .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pub .title { color: var(--ink); font-size: clamp(19px, 1.319vw, 28.5px); line-height: 1.4; margin-bottom: clamp(6px, 0.417vw, 9px); }
+  .pub .authors { font-size: clamp(16px, 1.111vw, 24px); line-height: 1.5; }
+  .pub .authors b { color: var(--ink); font-weight: 500; }
+  .pub .venue { font-family: var(--sans); font-size: clamp(14px, 0.972vw, 21px); color: var(--accent); font-weight: 500; margin: clamp(6px, 0.417vw, 9px) 0 clamp(12px, 0.833vw, 18px); }
+  .pub .venue span { color: var(--muted); font-weight: 400; }
+  .pub .note { font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); color: var(--muted); margin-top: clamp(10px, 0.694vw, 15px); }
+
+  /* experience: Aceternity-style sticky year + scroll-filled line (benchmark in timeline/) */
+  .xp { position: relative; }
+  .xp-track { position: absolute; left: clamp(19px, 1.319vw, 28.5px); top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--line) 6%, var(--line) 94%, transparent); }
+  .xp-fill { position: absolute; left: 0; top: 0; width: 2px; height: 0; border-radius: 2px; opacity: 0;
+    background: linear-gradient(to top, var(--accent) 0%, var(--hoist) 12%, transparent 100%); }
+  .xp-grp { display: grid; grid-template-columns: clamp(210px, 14.583vw, 315px) 1fr; gap: 0 clamp(32px, 2.222vw, 48px); padding-top: clamp(112px, 7.778vw, 168px); }
+  .xp-grp:first-of-type { padding-top: clamp(8px, 0.556vw, 12px); }
+  .xp-yr { position: relative; align-self: start; display: flex; align-items: center; gap: clamp(18px, 1.25vw, 27px); height: clamp(48px, 3.333vw, 72px); z-index: 1; }
+  .xp-dot { width: clamp(40px, 2.778vw, 60px); height: clamp(40px, 2.778vw, 60px); border-radius: 50%; background: var(--board); display: grid; place-items: center; flex: none; }
+  .xp-dot::after { content: ""; width: clamp(14px, 0.972vw, 21px); height: clamp(14px, 0.972vw, 21px); border-radius: 50%; background: var(--soft); border: 1px solid var(--line); transition: background .4s, border-color .4s; }
+  .xp-yr h3 { font: 500 clamp(44px, 3.056vw, 66px)/1 var(--serif); color: #B5AFA3; transition: color .4s; font-variant-numeric: lining-nums; }
+  .xp-grp.on .xp-dot::after { background: var(--accent); border-color: var(--accent); }
+  .xp-grp.on h3 { color: var(--ink); }
+  .xp-item { position: relative; }
+  .xp-item + .xp-item { margin-top: clamp(56px, 3.889vw, 84px); }
+  .xp-role { font-family: var(--sans); font-size: clamp(17px, 1.181vw, 25.5px); font-weight: 600; line-height: 1.35; color: var(--ink); }
+  .xp-meta { font-family: var(--sans); font-size: clamp(14px, 0.972vw, 21px); color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .xp-item ul { margin: clamp(12px, 0.833vw, 18px) 0 0 clamp(18px, 1.25vw, 27px); font-size: clamp(16px, 1.111vw, 24px); line-height: 1.6; }
+  .xp-item li { margin-bottom: clamp(4px, 0.278vw, 6px); }
+  .xp-stack { display: flex; flex-wrap: wrap; gap: clamp(6px, 0.417vw, 9px); margin-top: clamp(14px, 0.972vw, 21px); }
+  .xp-stack span { font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); line-height: 1; color: var(--body); padding: clamp(6px, 0.417vw, 9px) clamp(10px, 0.694vw, 15px); border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+  .xp-photos { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 0.972vw, 21px); margin-top: clamp(20px, 1.389vw, 30px); }
+  .xp-photos img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 8px; background: var(--soft);
+    box-shadow: 0 0 24px rgba(34,42,53,.06), 0 1px 1px rgba(0,0,0,.05), 0 0 0 1px rgba(34,42,53,.04), 0 16px 68px rgba(47,48,55,.05); }
+  .xp-photos.n1 { grid-template-columns: 1fr; } .xp-photos.n1 img { aspect-ratio: 2 / 1; }
+  .xp-photos.n3 img:first-child { grid-column: span 2; aspect-ratio: 2 / 1; }
+  /* each role's logo sits in the year column beside its role; gray until the line reaches the role */
+  .xp-logo { position: absolute; right: calc(100% + clamp(40px, 2.778vw, 60px)); top: clamp(-10px, -0.694vw, -7px); width: clamp(60px, 4.167vw, 90px); height: clamp(60px, 4.167vw, 90px);
+    display: flex; align-items: center; justify-content: center; opacity: .35; filter: grayscale(1); transition: opacity .5s, filter .5s; }
+  .xp-logo img { width: 100%; height: 100%; object-fit: contain; transform: scale(var(--ls, 1)); }   /* --ls evens out how big each logo reads */
+  .xp-item.on .xp-logo { opacity: 1; filter: none; }
+
+  /* projects */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(40px, 2.778vw, 60px) clamp(32px, 2.222vw, 48px); }
+  .card .thumb { aspect-ratio: 4 / 3; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; margin-bottom: clamp(14px, 0.972vw, 21px);
+    display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); color: var(--muted); }
+  .card h3 { font-weight: 500; font-size: clamp(18px, 1.25vw, 27px); color: var(--ink); line-height: 1.35; }
+  .card p { font-size: clamp(15px, 1.042vw, 22.5px); line-height: 1.6; margin-top: clamp(4px, 0.278vw, 6px); }
+  .card .tags { font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); color: var(--muted); margin-top: clamp(6px, 0.417vw, 9px); }
+  .card .thumb { position: relative; overflow: hidden; }
+  .card .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .5s ease-out; }
+  .card .thumb img + img { opacity: 0; }
+  .card:hover .thumb img + img { opacity: 1; }   /* second image swaps in on hover */
+  .side { margin-top: clamp(64px, 4.444vw, 96px); }
+  .side h3.sub { font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: clamp(8px, 0.556vw, 12px); }
+  .side-item { display: grid; grid-template-columns: clamp(160px, 11.111vw, 240px) 1fr; gap: clamp(24px, 1.667vw, 36px); align-items: center; padding: clamp(18px, 1.25vw, 27px) 0; border-top: 1px solid var(--line); }
+  .side-item img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 4px; border: 1px solid var(--line); display: block; }
+  .side-item h4 { font-weight: 500; font-size: clamp(18px, 1.25vw, 27px); color: var(--ink); line-height: 1.35; }
+  .side-item p { font-size: clamp(15px, 1.042vw, 22.5px); line-height: 1.6; margin-top: 2px; }
+  .side-item .tags { font-family: var(--sans); font-size: clamp(13px, 0.903vw, 19.5px); color: var(--muted); margin-top: 4px; }
+
+  /* library: a light oak bookcase. Each shelf is its own 3D scene, so books sort in depth instead of painting over
+     their neighbours. Hover pulls a book forward; picking one slides it out and turns it to show the cover. */
+  .lib-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+  .lib-head h2 { margin: 0; }
+  .tabs { font-family: var(--sans); font-size: clamp(14px, 0.972vw, 21px); display: flex; gap: clamp(6px, 0.417vw, 9px); flex-wrap: wrap; }
+  .tabs button { font: inherit; background: none; border: 1px solid transparent; border-radius: 8px; padding: clamp(5px, 0.347vw, 7.5px) clamp(13px, 0.903vw, 19.5px); color: var(--muted); cursor: pointer; }
+  .tabs button[aria-pressed="true"] { border-color: var(--line); color: var(--ink); background: var(--soft); }
+  .tabs button:hover { color: var(--ink); }
+  .case { --oak: #C8A273; --oak-top: #DBBD93; --oak-edge: #A9824F; position: relative; padding: 14px 16px 0;
+    background: linear-gradient(to bottom, #E9DFCF, #F1E9DC 30%, #EEE5D6);
+    box-shadow: inset 0 0 0 14px var(--oak), inset 0 0 0 15px var(--oak-edge), inset 0 18px 30px rgba(70,50,30,.10); border-radius: 4px; }
+  .case::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--oak-top); border-radius: 4px 4px 0 0; box-shadow: 0 1px 0 var(--oak-edge); }
+  .shelf-row { position: relative; perspective: 1400px; perspective-origin: 50% 0; padding: 30px 12px 0; }
+  .shelf-row::after { content: ""; position: absolute; left: 0; right: 0; bottom: -16px; height: 16px; z-index: 0;
+    background: linear-gradient(to bottom, var(--oak-top) 0 5px, var(--oak) 5px, var(--oak-edge)); box-shadow: 0 6px 10px rgba(60,40,20,.18); }
+  .shelf-row + .shelf-row { margin-top: 16px; }
+  .shelf-row:last-child { padding-bottom: 0; margin-bottom: 30px; }
+  .row { position: relative; z-index: 1; display: flex; align-items: flex-end; gap: 2px; transform-style: preserve-3d; min-height: 1px; }
+  .book { position: relative; flex: none; width: var(--w); height: var(--h); transform-style: preserve-3d; cursor: pointer; outline-offset: 6px; }
+  .box { position: absolute; left: 0; top: 0; width: var(--w); height: 100%; transform-style: preserve-3d; transform-origin: 0 50%;
+    transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .book:hover .box, .book:focus-visible .box { transform: translateZ(26px) translateY(-6px); }
+  .book[aria-pressed="true"] .box { transform: translateX(var(--sx, 0px)) translateZ(150px) translateY(-14px) rotateY(-90deg); }
+  .face { position: absolute; left: 0; top: 0; height: 100%; background: var(--c); backface-visibility: hidden; }
+  .spine { width: var(--w); color: var(--t); writing-mode: vertical-rl; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 0;
+    white-space: nowrap; overflow: hidden; border-radius: 2px 2px 0 0;
+    background-image: linear-gradient(to right, rgba(0,0,0,.22), rgba(255,255,255,.12) 18%, rgba(255,255,255,0) 50%, rgba(0,0,0,.18)); }
+  .spine .t { font-family: var(--serif); font-size: 13px; font-weight: 500; line-height: 1; overflow: hidden; text-overflow: ellipsis; min-height: 0; flex: 1 1 auto; }
+  .spine .a { font-family: var(--sans); font-size: 11px; line-height: 1; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; max-height: 36%; }
+  .cover { width: var(--d); transform-origin: 0 50%; transform: translateX(var(--w)) rotateY(90deg); overflow: hidden; border-radius: 0 3px 3px 0; }
+  .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cover.typo { color: var(--t); padding: 20px 16px; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover.typo b { font-family: var(--serif); font-weight: 500; font-size: 19px; line-height: 1.25; text-wrap: balance; }
+  .cover.typo i { font-family: var(--sans); font-style: normal; font-size: 12px; letter-spacing: .04em; }
+  .cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,.30), rgba(0,0,0,.08) 9%, rgba(0,0,0,.12)); }
+  .backc { width: var(--d); transform-origin: 0 50%; transform: rotateY(-90deg) translateX(calc(-1 * var(--d))); filter: brightness(.7); }
+  .top { width: var(--w); height: var(--d); transform-origin: 50% 0; transform: rotateX(-90deg); background: #EFE9DB; backface-visibility: visible;
+    background-image: linear-gradient(to right, rgba(0,0,0,.22), rgba(0,0,0,0) 12% 88%, rgba(0,0,0,.22)); }
+  .book[aria-pressed="true"] { z-index: 3; }
+  .caption { font-family: var(--sans); font-size: clamp(15px, 1.042vw, 22.5px); color: var(--muted); margin-top: clamp(14px, 0.972vw, 21px); min-height: 1.6em; }
+  .caption b { color: var(--ink); font-weight: 600; }
+
+  /* footer: the turf and its field line */
+  footer { margin-top: clamp(120px, 8.333vw, 180px); background: var(--turf); color: #fff; font-family: var(--sans); font-size: clamp(15px, 1.042vw, 22.5px); }
+  footer .wrap { position: relative; display: flex; justify-content: space-between; flex-wrap: wrap; gap: clamp(12px, 0.833vw, 18px); padding-top: clamp(72px, 5vw, 108px); padding-bottom: clamp(56px, 3.889vw, 84px); }
+  footer .wrap::before { content: ""; position: absolute; left: -50vw; right: -50vw; top: clamp(28px, 1.944vw, 42px); height: clamp(5px, 0.347vw, 7.5px); background: rgba(255,255,255,.88); }
+  footer { overflow: hidden; }
+  footer a { color: #fff; text-decoration-color: rgba(255,255,255,.6); }
+
+  @media (max-width: 860px) {
+    body { font-size: clamp(17px, 1.181vw, 25.5px); }
+    .wrap { padding: 0 clamp(16px, 1.111vw, 24px); }
+    .hero { height: auto; --m: 0; --f: 0; --c: 0; }
+    .hero-sticky { position: relative; height: auto; display: flex; flex-direction: column; }
+    .hero-photo { order: 1; aspect-ratio: 4 / 5; margin-top: clamp(96px, 6.667vw, 144px);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 86%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 86%, transparent); }
+    .hero-photo img { object-position: 50% 78%; filter: none; transform: scale(calc(1 + var(--p) * 0.15)); }
+    .hero-copy { order: 2; padding: clamp(8px, 0.556vw, 12px) clamp(16px, 1.111vw, 24px) clamp(56px, 3.889vw, 84px); transform: none; position: static; }
+    nav { left: clamp(16px, 1.111vw, 24px); right: clamp(16px, 1.111vw, 24px); top: clamp(20px, 1.389vw, 30px); gap: clamp(6px, 0.417vw, 9px) clamp(16px, 1.111vw, 24px); }
+    nav .name { flex-basis: 100%; }
+    .hero h1 { font-size: clamp(28px, 1.944vw, 42px); }
+    main { margin-top: 0; }
+    main::before { display: none; }
+    section:first-child { padding-top: clamp(64px, 4.444vw, 96px); }
+    .case { padding: 10px 10px 0; box-shadow: inset 0 0 0 10px var(--oak), inset 0 0 0 11px var(--oak-edge); }
+    .case::before { height: 10px; }
+    .pub { grid-template-columns: 1fr; gap: clamp(14px, 0.972vw, 21px); }
+    .grid { grid-template-columns: 1fr; }
+    .side-item { grid-template-columns: 1fr; }
+    .xp-grp { grid-template-columns: 1fr; padding-left: clamp(52px, 3.611vw, 78px); padding-top: clamp(88px, 6.111vw, 132px); }
+    .xp-yr { top: 0; margin-left: clamp(-78px, -3.611vw, -52px); gap: clamp(12px, 0.833vw, 18px); height: clamp(64px, 4.444vw, 96px); background: var(--board); }
+    .xp-yr h3 { font-size: clamp(32px, 2.222vw, 48px); }
+    .xp-logo { right: 0; }
+    .xp-item { padding-right: 72px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .hero { height: 100vh; }
+    main { margin-top: 0; }
+    main::before { display: none; }
+    .book, .box, .cover::after { transition: none; }
+    #stage img { animation: none; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-sticky">
+    <canvas id="dots" aria-hidden="true"></canvas>
+    <div class="hero-copy">
+      <nav>
+        <a class="name" href="#">Sunghwan Cho</a>
+        <a href="#research">Research</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#library">Library</a>
+        <a href="cv.pdf">CV</a>
+      </nav>
+      <h1>I want to bridge the gap between simulation and reality.</h1>
+      <p>A robot can now gain years of experience in simulation overnight, but that experience still does not fully carry into the real world.</p>
+      <p>I'm a Computer Engineering and Computer Science student at the University of Wisconsin–Madison. At the CATS Lab with Prof. Xiaopeng Li, I turn existing traffic camera video into vehicle trajectories to tell automated and human-driven vehicles apart.</p>
+      <p>Besides research, I work on <a href="https://www.rltosim.com">RTOS</a> (Real to Sim), which turns one site video into a robot-ready digital twin, so manufacturers can see whether robots will work on their floor before buying them.</p>
+      <div class="pills">
+        <a class="pill" href="mailto:shcho1551@gmail.com">Email</a>
+        <a class="pill" href="https://github.com/sunnycho100">GitHub</a>
+        <a class="pill" href="https://linkedin.com/in/chosunghwan">LinkedIn</a>
+        <a class="pill" href="cv.pdf">CV</a>
+      </div>
+    </div>
+    <div class="hero-photo"><img src="img/hero.jpg" alt="Sunghwan Cho sitting behind two Booster humanoid robots in the lab" width="1500" height="2000"></div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <section id="research">
+    <h2>Research</h2>
+    <div class="pub wide">
+      <div>
+        <div class="title">Vehicle Trajectory Extraction from Roadside Cameras with Self-Trained Monocular 3D Detection</div>
+        <div class="authors"><b>Sunghwan Cho</b>, Hang Zhou, Bofeng Cao, Shixiao Liang, Keke Long, Xiaopeng Li</div>
+        <div class="venue">IEEE Intelligent Vehicles Symposium (IV) 2027 <span>· in progress</span></div>
+        <div class="pills"><span class="pill soon">Paper</span><span class="pill soon">Project page</span><span class="pill soon">Video</span></div>
+      </div>
+      <figure class="fig"><img src="img/papers/iv-framework.png" alt="Pipeline: video, calibration, 3D detection with a road mask, tracking and smoothing, and self-training"></figure>
+    </div>
+    <div class="pub">
+      <div class="thumb clip"><video muted loop playsinline preload="none" poster="img/papers/trc-detect.jpg" src="img/papers/trc-detect.mp4" aria-label="Monocular 3D boxes on a roadside camera"></video></div>
+      <div>
+        <div class="title">Vehicle Trajectory Reconstruction and Automated Vehicle Identification Using Roadside Cameras</div>
+        <div class="authors">Hang Zhou*, Bofeng Cao*, <b>Sunghwan Cho*</b>, Shixiao Liang, Keke Long, David Noyce, Xiaopeng Li</div>
+        <div class="venue">Transportation Research Part C: Emerging Technologies <span>· in progress</span></div>
+        <div class="pills"><span class="pill soon">Paper</span><span class="pill soon">Project page</span></div>
+        <div class="note">*Equal contribution</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <h2>Experience</h2>
+    <div class="xp" id="xp"><div class="xp-track"><div class="xp-fill" id="xp-fill"></div></div></div>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="grid">
+      <div class="card"><div class="thumb"><img src="img/projects/rtos.jpg" alt="Three humanoids lifting a steel T-frame in simulation"><img src="img/projects/rtos-factory.jpg" alt="Overhead view of the simulated factory"></div><h3>RTOS: Real-to-Sim Robot Deployment</h3><p>One site video becomes a robot-ready digital twin for testing before deployment.</p><div class="tags">Isaac Sim · Gaussian Splatting · RL</div></div>
+      <div class="card"><div class="thumb"><img src="img/projects/ecm.png" alt="Robot head camera view opening the chamber lid"></div><h3>ECM 2027 Embodied AI Challenge</h3><p>Imitation learning policies for a mobile bimanual robot servicing a semiconductor chamber.</p><div class="tags">LeRobot · pi0.5 · Isaac Sim</div></div>
+      <div class="card"><div class="thumb">image</div><h3>Humanoid Locomotion with RL</h3><p>PPO walking policy for the Booster K1, raising top speed in sim from 2.4 to 4.5 m/s.</p><div class="tags">MuJoCo · PPO</div></div>
+      <div class="card"><div class="thumb">image</div><h3>LifeVision</h3><p>Pool camera that flags drowning risk, with simulated scenarios for ground truth.</p><div class="tags">RF-DETR · ByteTrack · Isaac Sim</div></div>
+      <div class="card"><div class="thumb"><img src="img/projects/segway.jpg" alt="Segway chassis with motors, chain drive and the FPGA board" style="object-position: 50% 62%"></div><h3>Segway Balance Controller</h3><p>PID balance control on FPGA, closing timing at 333&nbsp;MHz.</p><div class="tags">SystemVerilog · FPGA</div></div>
+    </div>
+    <div class="side">
+      <h3 class="sub">Side projects</h3>
+      <div class="side-item"><img src="img/projects/neuron.png" alt="Top-level neuron schematic"><div><h4>7nm Neuron Chip</h4><p>Transistor-level neural network neuron for wearable activity detection in ASAP7.</p><div class="tags">Cadence Virtuoso · HSPICE</div></div></div>
+    </div>
+  </section>
+
+  <section id="library">
+    <div class="lib-head">
+      <h2>Library</h2>
+      <div class="tabs" role="group" aria-label="Filter books">
+        <button aria-pressed="true" data-g="all">All</button>
+        <button aria-pressed="false" data-g="en">English</button>
+        <button aria-pressed="false" data-g="ko">Korean</button>
+        <button aria-pressed="false" data-g="other">Other languages</button>
+      </div>
+    </div>
+    <div class="case" id="case"></div>
+    <p class="caption" id="caption" aria-live="polite"></p>
+  </section>
+
+</div>
+<footer>
+  <div class="wrap">
+    <span>Say hello at <a href="mailto:shcho1551@gmail.com">shcho1551@gmail.com</a></span>
+    <span>© 2026 Sunghwan Cho</span>
+  </div>
+</footer>
+</main>
+
+<div id="stage" aria-hidden="true">
+  <img class="me" src="img/me.png" alt="" width="200" height="528">
+  <img class="k1" src="img/k1.png" alt="" width="161" height="304">
+</div>
+
+<script>
+
+// hero: scroll progress drives the zoom, blur and dissolve (CSS reads --p)
+const hero=document.querySelector(".hero"), sticky=document.querySelector(".hero-sticky"), cv=document.getElementById("dots"), ctx=cv.getContext("2d");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let p=0, mx=-9999, my=-9999, W=0, H=0, running=false;
+function onScroll(){
+  if(reduce) return;
+  const range=hero.offsetHeight-innerHeight;
+  p=Math.min(1, Math.max(0, scrollY/(range>40 ? range : innerHeight)));
+  hero.style.setProperty("--p", p.toFixed(4));
+}
+// dot grid: a slow wave crosses it, and dots near the pointer warm up
+function size(){ const d=Math.min(devicePixelRatio||1,2); W=sticky.clientWidth; H=sticky.clientHeight; cv.width=W*d; cv.height=H*d; ctx.setTransform(d,0,0,d,0,0); }
+function draw(t){
+  ctx.clearRect(0,0,W,H);
+  const s=26, T=t/1000;
+  for(let y=s/2;y<H;y+=s) for(let x=s/2;x<W;x+=s){
+    const w=Math.sin(x*0.011+y*0.017-T*0.9)*.5+.5, w3=w*w*w;
+    const near=Math.max(0, 1-Math.hypot(x-mx,y-my)/150);
+    const a=0.13+w3*0.22+near*0.6;
+    ctx.fillStyle=`rgba(${70+140*near|0},${72+38*near|0},${70-30*near|0},${a})`;
+    ctx.beginPath(); ctx.arc(x,y,1+w3*0.9+near*1.8,0,6.2832); ctx.fill();
+  }
+  if(running) requestAnimationFrame(draw);
+}
+function setRunning(on){ on=on&&!reduce; if(on&&!running){ running=true; requestAnimationFrame(draw); } else if(!on) running=false; }
+addEventListener("scroll", onScroll, {passive:true});
+addEventListener("resize", ()=>{ size(); onScroll(); if(!running) draw(0); });
+sticky.addEventListener("pointermove", e=>{ const r=sticky.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+sticky.addEventListener("pointerleave", ()=>{ mx=my=-9999; });
+new IntersectionObserver(es=>setRunning(es[0].isIntersecting)).observe(sticky);
+size(); onScroll(); draw(0);
+
+// library: [title, author, language, cover url, spine color, cover aspect]
+const BOOKS = [["Zero to One", "Peter Thiel", "en", "https://covers.openlibrary.org/b/id/9002334-L.jpg", "#6192bb", 0.864], ["The Technological Republic", "Alex Karp", "en", null, null, null], ["The Millionaire Fastlane", "M. J. DeMarco", "en", "https://covers.openlibrary.org/b/id/7892520-L.jpg", "#5b5367", 0.667], ["The Art of Spending Money", "Morgan Housel", "en", "https://covers.openlibrary.org/b/id/15142229-L.jpg", "#fdfdfd", 0.642], ["Same as Ever", "Morgan Housel", "en", "https://covers.openlibrary.org/b/id/14157635-L.jpg", "#f7f7f7", 0.648], ["The Psychology of Money", "Morgan Housel", "en", "https://covers.openlibrary.org/b/id/10389354-L.jpg", "#f0f5f1", 0.638], ["Be Useful", "Arnold Schwarzenegger", "en", "https://covers.openlibrary.org/b/id/14824078-L.jpg", "#b5a7aa", 0.646], ["The Bitcoin Standard", "Saifedean Ammous", "en", "https://covers.openlibrary.org/b/id/10320866-L.jpg", "#fafafa", 0.624], ["The Future After AI", "Jason Schenker", "en", null, null, null], ["The Lean Startup", "Eric Ries", "en", "https://covers.openlibrary.org/b/id/7104760-L.jpg", "#2178b8", 0.688], ["How to Win Friends and Influence People", "Dale Carnegie", "en", "https://covers.openlibrary.org/b/id/13314878-L.jpg", "#afada6", 0.656], ["The One Thing", "Gary Keller", "en", "https://covers.openlibrary.org/b/id/8757842-L.jpg", "#f3f3fb", 0.616], ["The Phone Fix", "Fay Begeti", "en", null, null, null], ["Fit for Life", "Harvey Diamond", "en", "https://covers.openlibrary.org/b/id/6688167-L.jpg", "#a5a285", 0.606], ["Rich Dad Poor Dad", "Robert Kiyosaki", "en", "https://covers.openlibrary.org/b/id/8315603-L.jpg", "#624b55", 0.666], ["The Freedom of Self-Forgetfulness", "Tim Keller", "en", "https://covers.openlibrary.org/b/id/7341768-L.jpg", "#988371", 0.618], ["Unstoppable", "Brian Tracy", "en", null, null, null], ["How Countries Go Broke", "Ray Dalio", "en", "https://covers.openlibrary.org/b/id/15093924-L.jpg", "#c51d2e", 0.667], ["How to Talk to Anyone", "Leil Lowndes", "en", "https://covers.openlibrary.org/b/id/58950-L.jpg", "#feda22", 0.667], ["The Five Minute Journal", "Intelligent Change", "en", null, null, null], ["Leverage", "Rob Moore", "en", "https://covers.openlibrary.org/b/id/12796764-L.jpg", "#e5e5ea", 0.662], ["Rich AF", "Vivian Tu", "en", "https://covers.openlibrary.org/b/id/14394075-L.jpg", "#34414e", 0.658], ["The Death of Money", "James Rickards", "en", "https://covers.openlibrary.org/b/id/7316024-L.jpg", "#a2a38e", 0.662], ["Rich Dad's Guide to Investing", "Robert Kiyosaki", "en", "https://covers.openlibrary.org/b/id/8013287-L.jpg", "#f6f8e6", 0.626], ["Rich Dad's Cashflow Quadrant", "Robert Kiyosaki", "en", "https://covers.openlibrary.org/b/id/11876411-L.jpg", "#190d1b", 0.656], ["What I Wish I Knew When I Was 20", "Tina Seelig", "en", "https://covers.openlibrary.org/b/id/9257055-L.jpg", "#76665d", 0.656], ["Think and Grow Rich", "Napoleon Hill", "en", "https://covers.openlibrary.org/b/id/14542536-L.jpg", "#4f1313", 0.612], ["Sapiens", "Yuval Noah Harari", "en", "https://covers.openlibrary.org/b/id/8634250-L.jpg", "#fef7f6", 0.652], ["The Richest Man in Babylon", "George S. Clason", "en", "https://covers.openlibrary.org/b/id/10491331-L.jpg", "#3e3b36", 0.666], ["University Physics Volume 2", "OpenStax", "en", "https://covers.openlibrary.org/b/id/10395077-L.jpg", "#699157", 0.774], ["The Barefoot Investor", "Scott Pape", "en", "https://covers.openlibrary.org/b/id/884884-L.jpg", "#485259", 0.666], ["Hold Me Tight", "Sue Johnson", "en", "https://covers.openlibrary.org/b/id/2379203-L.jpg", "#33b6b5", 0.646], ["Invent and Wander", "Jeff Bezos", "en", "https://covers.openlibrary.org/b/id/10229085-L.jpg", "#f8f9f3", 0.644], ["Foster", "Claire Keegan", "en", "https://covers.openlibrary.org/b/id/10335372-L.jpg", "#1c1517", 0.61], ["The Power of Ambition", "Jim Rohn", "en", null, null, null], ["Instinct", "Rebecca Heiss", "en", "https://covers.openlibrary.org/b/id/10497741-L.jpg", "#e9263d", 0.656], ["The Great Money Bubble", "David A. Stockman", "en", null, null, null], ["Give and Take", "Adam Grant", "en", "https://covers.openlibrary.org/b/id/7391212-L.jpg", "#d8b7bf", 0.655], ["The Gift of Not Belonging", "Rami Kaminski", "en", null, null, null], ["The AI Bubble: Investing in Semiconductors", "Lee Hyung-soo", "ko", null, null, null], ["Why Are You Neglecting Yourself?", "Go Yoon", "ko", null, null, null], ["Decorating a Room of My Own", "Little Rooms", "ko", null, null, null], ["The Reverser", "Jacheong", "ko", null, null, null], ["Daily Bible, Korean and English", "Scripture Union", "ko", null, null, null], ["Wildflower", "Na Tae-joo", "ko", null, null, null], ["The Shifting Global Economy", "Park Jong-hoon", "ko", null, null, null], ["Practical Excel for Work", "Oppadu", "ko", null, null, null], ["Bitcoin Super Cycle", "Shin Min-cheol", "ko", null, null, null], ["Altcoin Hyper Cycle", "Shin Min-cheol", "ko", null, null, null], ["The Age of Bitcoin", "Kim Chang-ik", "ko", null, null, null], ["Riding Bitcoin's Rise", "Kang Hwan-guk", "ko", null, null, null], ["Elon Musk: Plan 3", "Lee Jin-bok", "ko", null, null, null], ["Bitcoin and the Future of Money", "Hong Ik-hee", "ko", null, null, null], ["Visceral Fat", "Lee Wang-rim", "ko", null, null, null], ["The AI Chip Revolution", "Kwon Soon-woo", "ko", null, null, null], ["A Short World History of Wealth", "Han Jeong-yeop", "ko", null, null, null], ["Catching Opportunities, Again and Again 1", "Jordan Kim Jang-seop", "ko", null, null, null], ["Catching Opportunities, Again and Again 2", "Jordan Kim Jang-seop", "ko", null, null, null], ["Wealth Changer 1", "Kim Jang-seop", "ko", null, null, null], ["The Money Book", "Toss", "ko", null, null, null], ["A Map for Investing in Supercoins", "Park Jong-han", "ko", null, null, null], ["Automated Bitcoin Futures Trading with Binance", "Multicore", "ko", null, null, null], ["Short-Term Crypto Trading", "Nassi", "ko", null, null, null], ["NFT Investing in Practice", "Kim Jeong-hyeok", "ko", null, null, null], ["Crypto Chart Analysis", "Keuman", "ko", null, null, null], ["Economics, the Essentials", "Baekeoknam", "ko", null, null, null], ["Physical AI Megatrends", "Choi Hong-seop, Won Mir", "ko", null, null, null], ["Crossroads of Wealth", "Oh Geon-young", "ko", null, null, null], ["Why Are You Living for Others?", "Go Yoon", "ko", null, null, null], ["Why Blame Life Instead of Your Attitude?", "Go Yoon", "ko", null, null, null], ["Can We Talk About Money?", "Ju Eon-gyu", "ko", null, null, null], ["Working Simply, the Apple Way", "Park Ji-soo", "ko", null, null, null], ["A User's Guide to Bitcoin", "Baek Hoon-jong", "ko", null, null, null], ["One Read", "Lee Ji-sung", "ko", null, null, null], ["Reading That Makes the Difference", "Park Sang-bae", "ko", null, null, null], ["Algorithmic Problem Solving Strategies", "Koo Jong-man", "ko", null, null, null], ["Building Paid Web Services with the ChatGPT API", "Jo Dong-geun", "ko", null, null, null], ["The 100-Day Morning Habit", "Kelly Choi", "ko", null, null, null], ["Short-Term Stock Trading from Scratch", "Hong In-gi", "ko", null, null, null], ["Investing in the Metaverse", "Kwak Byung-yeol, Yoo Sung-man", "ko", null, null, null], ["Retire Rich on a Salary", "Neonawi", "ko", null, null, null], ["Broad and Shallow Knowledge for Smart Conversations 2", "Chae Sa-jang", "ko", null, null, null], ["Forecast of the Era: The Society of Names", "Song Gil-young", "ko", null, null, null], ["Forecast of the Era: The Birth of a Lightweight Civilization", "Song Gil-young", "ko", null, null, null], ["The Perfect Caveman", "Jacheong", "ko", null, null, null], ["The Next Wave of AI", "Liu Yunhao", "other", null, null, null], ["Siddhartha", "Hermann Hesse", "other", null, null, null], ["Schopenhauer's Lessons on Life", "Arthur Schopenhauer", "other", null, null, null], ["Meditations", "Marcus Aurelius", "other", null, null, null], ["Selected Haiku of Bashō", "Matsuo Bashō", "other", null, null, null], ["Helgoland", "Carlo Rovelli", "other", null, null, null], ["100 Psychological Marketing Techniques", "Toshio Sakai", "other", null, null, null], ["Three Months Can Change Your Life", "Daisuke Sasaki", "other", null, null, null], ["Expert Secrets", "Russell Brunson", "other", null, null, null], ["Demian", "Hermann Hesse", "other", "https://covers.openlibrary.org/b/id/12569297-L.jpg", "#664d4a", 0.666], ["Übermensch", "Friedrich Nietzsche", "other", "https://covers.openlibrary.org/b/id/15016065-L.jpg", "#ddbc82", 0.64]];
+const COLORS = ["#2f3e46","#446860","#3d405b","#5d6150","#7a4f33","#283618","#56487a","#7f3434","#d9d2c3","#e0d6bf","#cad2c5","#c9bfae"];
+function hash(s){let h=0;for(const c of s)h=(h*31+c.codePointAt(0))>>>0;return h;}
+function lum(hex){const c=[1,3,5].map(i=>{const v=parseInt(hex.slice(i,i+2),16)/255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4;});return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+const caseEl=document.getElementById("case"), caption=document.getElementById("caption");
+let shown=[], els=[];
+function setCaption(book){
+  caption.innerHTML = book ? `<b></b> · <span></span>` : `${shown.length} books. Pick one to see its cover.`;
+  if(book){ caption.querySelector("b").textContent=book[0]; caption.querySelector("span").textContent=book[1]; }
+}
+function unpick(){ els.forEach(b=>{ b.setAttribute("aria-pressed","false"); b.style.removeProperty("--sx"); }); }
+function pick(el){
+  const was=el.getAttribute("aria-pressed")==="true"; unpick();
+  if(!was){
+    const row=el.parentElement, d=parseFloat(el.style.getPropertyValue("--d")), over=el.offsetLeft+d-row.clientWidth+10;
+    if(over>0) el.style.setProperty("--sx", `${-over}px`);   // keep the turned cover inside the case
+    el.setAttribute("aria-pressed","true");
+  }
+  setCaption(was ? null : el._book);
+}
+function shelve(){   // pack the books into shelves that fit the case's width
+  const inner=caseEl.clientWidth-32-24; if(inner<160) return;   // not laid out yet (hidden tab); the observer below shelves it later
+  let row=null, used=0;
+  caseEl.querySelectorAll(".shelf-row").forEach(r=>r.remove());
+  for(const el of els){
+    const w=parseFloat(el.style.getPropertyValue("--w"))+2;
+    if(!row||used+w>inner){ const sr=document.createElement("div"); sr.className="shelf-row"; row=document.createElement("div"); row.className="row"; sr.appendChild(row); caseEl.appendChild(sr); used=0; }
+    row.appendChild(el); used+=w;
+  }
+}
+function render(g){
+  shown=BOOKS.filter(b=>g==="all"||b[2]===g); els=[];
+  for(const book of shown){
+    const [t,a,,img,col,ratio]=book, hs=hash(t), bg=col||COLORS[hs%COLORS.length], fg=lum(bg)>0.179?"#1C1B19":"#F6F2E9";
+    const h=196+(hs>>>8)%14, w=Math.round(Math.min(44,Math.max(26,20+(t.length+a.length)*0.6))), d=Math.round(h*Math.min(.74,Math.max(.6,ratio||.66)));
+    const el=document.createElement("div"); el.className="book"; el.tabIndex=0; el._book=book;
+    el.setAttribute("role","button"); el.setAttribute("aria-pressed","false"); el.setAttribute("aria-label",`${t} by ${a}`);
+    el.style.cssText=`--w:${w}px;--h:${h}px;--d:${d}px;--c:${bg};--t:${fg}`;
+    el.innerHTML=`<div class="box"><div class="face backc"></div><div class="face top"></div><div class="face cover${img?"":" typo"}">${img?`<img loading="lazy" alt="">`:"<b></b><i></i>"}</div><div class="face spine"><span class="t"></span><span class="a"></span></div></div>`;
+    el.querySelector(".t").textContent=t; el.querySelector(".a").textContent=a;
+    if(img) el.querySelector("img").src=img; else { el.querySelector(".cover b").textContent=t; el.querySelector(".cover i").textContent=a; }
+    el.onclick=()=>pick(el);
+    el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(el); } else if(e.key==="Escape"){ unpick(); setCaption(null); } };
+    el.onmouseenter=()=>setCaption(book);
+    el.onmouseleave=()=>{ const o=els.find(b=>b.getAttribute("aria-pressed")==="true"); setCaption(o?o._book:null); };
+    els.push(el);
+  }
+  shelve(); setCaption(null);
+}
+let rw=0; new ResizeObserver(()=>{ if(caseEl.clientWidth!==rw){ rw=caseEl.clientWidth; unpick(); shelve(); } }).observe(caseEl);
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-pressed", String(x===b))); render(b.dataset.g);
+});
+render("all");
+
+// stage: once the hero is gone, a mini-me and a Booster K1 (rendered from the real model) stand in the right gutter.
+// They step aside while the bookshelf passes and end up on the field line in the footer.
+const stageEl=document.getElementById("stage"), mainEl=document.querySelector("main"), footEl=document.querySelector("footer");
+function place(){
+  const SW=innerWidth, SH=innerHeight, mr=mainEl.getBoundingClientRect(), fr=footEl.getBoundingClientRect();
+  const wr=document.querySelector("main > .wrap"), right=Math.min(SW-16, wr.getBoundingClientRect().right-parseFloat(getComputedStyle(wr).paddingRight)), line=fr.top+29, H=stageEl.offsetHeight, Wd=stageEl.offsetWidth;
+  let show=false, feet=SH-26;
+  if(line>H+20 && line<SH-4){ show=true; feet=line; }                                              // standing on the field line
+  else if(SW>=1100 && mr.top<SH-320 && fr.top>SH) show=true;   // docked in the gutter
+  if(show) stageEl.style.transform=`translate(${Math.round(right-Wd+18)}px,${Math.round(feet-H)}px)`;
+  stageEl.classList.toggle("on", show);
+}
+addEventListener("scroll", place, {passive:true});
+addEventListener("resize", place);
+place();
+
+// experience timeline, old to recent. Text for now; set PHOTOS = true to bring the photo grids back (n = photos by time spent).
+const PHOTOS = false;
+const lg = f => `<img src="img/logos/${f}" alt="">`;
+const XP = [
+  { year: "2022", items: [
+    { logo: lg("wisc.png"), ls: 1.1, org: "UW–Madison", role: "B.S. Computer Engineering and Computer Science", when: "2022 – 23, 2025 – 27", n: 4,
+      say: ["GPA 3.91, Dean’s Honor List (5/5 semesters)", "Teaching Assistant for ECE 352: Digital System Fundamentals, instructing 400+ students across three semesters"],
+      stack: ["SystemVerilog", "C", "Python", "Synopsys DC"] } ] },
+  { year: "2023", items: [
+    { logo: lg("rok-army.png"), org: "Republic of Korea Army", role: "Sergeant, Network Engineer", when: "Jun 2023 – Dec 2024", n: 3,
+      say: ["Ran the brigade’s PRC-999K tactical radio network for 1000+ troops", "Linked command and front-line units through TICN"],
+      stack: ["PRC-999K", "TICN", "Signal analysis"] } ] },
+  { year: "2025", items: [
+    { logo: lg("deloitte.svg"), ls: .9, org: "Deloitte", role: "Technology Strategy Intern", when: "Jun – Aug 2025", n: 1,
+      say: ["Paperless transformation for a $50B financial institution", "Scored AI-OCR, blockchain and eForm vendors on cost and KPIs"],
+      stack: ["TOGAF", "Java", "Cost-benefit analysis"] },
+    { logo: lg("cats.png"), ls: 1.35, org: "CATS Lab", role: "Research Intern", when: "Sep 2025 – now", n: 3,
+      say: ["Calibrated traffic cameras and cross-checked them with a 3D reconstruction", "Self-trained a 3D vehicle detector, raising unseen-video detection from 46% to 91%", "Cut speed error against GPS from 12.6 to 0.27 mph"],
+      stack: ["Python", "PyTorch", "OpenCV", "BEVHeight", "AB3DMOT", "COLMAP"] },
+    { logo: lg("pns.png"), ls: 1.25, org: "PNS Networks", role: "Software Engineer Intern", when: "Dec 2025 – Jan 2026", n: 1,
+      say: ["Freight rate platform as an Electron app with an LLM chat panel, cutting manual work 95%", "Risk-scoring model on 100k+ shipment records"],
+      stack: ["Python", "Flask", "React", "TypeScript", "Electron"] } ] },
+  { year: "2026", items: [
+    { logo: lg("contoro.png"), org: "Contoro Robotics", role: "Software Engineer Intern", when: "Feb – May 2026", n: 2,
+      say: ["Robot control platform turning plain-English commands into MCP tool calls in Isaac Sim", "RobotMCP website with GA4 tracking, page weight cut 90%"],
+      stack: ["Python", "TypeScript", "FastAPI", "MCP", "AWS", "Isaac Sim", "React"] },
+    { logo: lg("modoc.png"), ls: .78, org: "MoDoc AI", role: "Software Developer Intern", when: "May – Oct 2026", n: 2,
+      say: ["Led a 5-person team moving 3,500+ pages to Next.js, keeping URLs for 20K+ users", "Led the AI orchestration and marketing teams alongside the CEO"],
+      stack: ["Next.js", "Payload CMS", "GCP", "TypeScript"] } ] },
+];
+(() => {
+  const xp = document.getElementById("xp"), fill = document.getElementById("xp-fill");
+  const shots = it => !PHOTOS ? "" : `<div class="xp-photos n${it.n}">${Array.from({ length: it.n }, (_, i) =>
+    `<img src="https://picsum.photos/seed/${it.org.replace(/\W/g, "")}${i}/800/520" alt="" loading="lazy">`).join("")}</div>`;
+  xp.insertAdjacentHTML("beforeend", XP.map(g => `
+    <div class="xp-grp">
+      <div class="xp-yr"><span class="xp-dot"></span><h3>${g.year}</h3></div>
+      <div>${g.items.map(it => `
+        <div class="xp-item">
+          <span class="xp-logo" style="--ls:${it.ls || 1}">${it.logo}</span>
+          <div class="xp-role">${it.role}, ${it.org}</div><div class="xp-meta">${it.when}</div>
+          <ul>${it.say.map(t => `<li>${t}</li>`).join("")}</ul>
+          <div class="xp-stack">${it.stack.map(t => `<span>${t}</span>`).join("")}</div>
+          ${shots(it)}
+        </div>`).join("")}</div>
+    </div>`).join(""));
+  const grps = [...xp.querySelectorAll(".xp-grp")], RMx = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let queued = false;
+  function frame() {
+    queued = false;
+    const r = xp.getBoundingClientRect(), vh = innerHeight;
+    // the tip rides at 55% of the screen, so the role you are reading in the middle is the one lit up
+    const p = RMx ? 1 : Math.min(1, Math.max(0, (vh * .55 - r.top) / r.height));
+    fill.style.height = p * r.height + "px";
+    fill.style.opacity = Math.min(1, p * 10);
+    const tip = r.top + p * r.height;
+    grps.forEach(g => {
+      g.classList.toggle("on", g.querySelector(".xp-item").getBoundingClientRect().top + 12 <= tip);
+      g.querySelectorAll(".xp-item").forEach(it => it.classList.toggle("on", it.getBoundingClientRect().top + 12 <= tip));
+    });
+  }
+  addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(frame); } }, { passive: true });
+  addEventListener("resize", frame);
+  frame();
+})();
+
+// paper teaser: play on hover like Jon Barron's list, poster otherwise
+document.querySelectorAll(".pub .thumb video").forEach(v => {
+  const pub = v.closest(".pub");
+  pub.addEventListener("mouseenter", () => v.play().catch(() => {}));
+  pub.addEventListener("mouseleave", () => { v.pause(); v.currentTime = 0; });
+});
+</script>
+</body>
+</html>
